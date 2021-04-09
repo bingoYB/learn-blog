@@ -9,6 +9,7 @@ module.exports = {
   ],
   base:'/learn-blog/dist/',
   dest: './dist',
+  port:8886,
   markdown: {
     lineNumbers: true
   },
@@ -17,6 +18,7 @@ module.exports = {
     './sidebar.js'
   ],
   themeConfig: {
+    logo: '/logo.png',
     sidebarDepth: 2,
     smoothScroll: true,
     repo: 'bingoYB/learn-blog',
@@ -24,7 +26,6 @@ module.exports = {
     sidebar,
     docsDir: 'docs',
     editLinks: true,
-    editLinkText: '在 Github 上编辑此页',
     lastUpdated: '更新时间',
   },
   plugins: [

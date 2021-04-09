@@ -5,6 +5,7 @@ const note = [
     collapsable: true,
     children: [
       'css/定位与布局',
+      'css/现代化CSS',
     ]
   },
 ]
