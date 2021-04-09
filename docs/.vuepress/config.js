@@ -7,7 +7,8 @@ module.exports = {
   head: [
     ['link', { rel: 'icon', href: '/logo.png' }]
   ],
-  base:'/learn-blog/',
+  base:'/learn-blog/dist/',
+  dest: './dist',
   markdown: {
     lineNumbers: true
   },
