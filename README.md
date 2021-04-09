@@ -1,33 +1,17 @@
-# Website
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+# 个人博客
 
-## Installation
 
-```console
-yarn install
-```
+记录遇到的问题，和一些学习笔记，还有做的一些算法题
 
-## Local Development
-
-```console
-yarn start
-```
-
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
-
-```console
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-```console
-GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+访问地址：[l-sui.github.io](https://l-sui.github.io)
+时间原因，有一部分没来得及整理--
+部分内容转载自：[hondrytravis.github.io](https://hondrytravis.github.io)
+---
+* linux
+* 自动化
+* js
+* QA
+* 性能优化
+* 源码分析
+* cssNext
