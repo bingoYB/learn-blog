@@ -25,7 +25,7 @@ module.exports = {
     nav,
     sidebar,
     docsDir: 'docs',
-    editLinks: true,
+    editLinks: false,
     lastUpdated: '更新时间',
   },
   plugins: [
