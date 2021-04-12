@@ -151,5 +151,5 @@ solid 为面向对象设计原则中的一种
 
 参考：
 
-[六大设计模式（SOLID）]: https://www.jianshu.com/p/3268264ae581
+[六大设计模式（SOLID）](https://www.jianshu.com/p/3268264ae581)
 
