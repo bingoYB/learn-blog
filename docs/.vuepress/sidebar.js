@@ -18,6 +18,14 @@ const note = [
       '编程思想/IOC控制反转DI依赖注入',
     ]
   },
+  {
+    title: 'JavaScript',
+    collapsable: true,
+    children: [
+      'javascript/webpack5新特性',
+      'javascript/webpack打包优化之路'
+    ]
+  },
 ]
 
 const algorithm = []
