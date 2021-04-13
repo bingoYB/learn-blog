@@ -357,9 +357,9 @@ splitChunks: {
 
 js脚本直接引入，不编译
 
+```html
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js?feature=Map,Set"></script>
-
-复制
+```
 
 使⽤动态 polyfill, 它会根据你的浏览器 UA 头，判断你是否⽀持某些特性，从⽽返回给你⼀个合适的 polyfill
 ``` html
