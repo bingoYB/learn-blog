@@ -26,6 +26,15 @@ const note = [
       'javascript/webpack打包优化之路'
     ]
   },
+  {
+    title: 'HTTP',
+    collapsable: true,
+    children: [
+      'HTTP/RPC',
+      'HTTP/HTTP',
+      'HTTP/TCP'
+    ]
+  },
 ]
 
 const algorithm = []
