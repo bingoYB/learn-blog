@@ -2,10 +2,13 @@ const nav = require('./nav.js')
 const sidebar = require('./sidebar.js')
 
 module.exports = {
-  title: 'BINGO',
-  description: '学然后知不足',
+  title: 'BINGO BLOG',
+  description: 'BINGO BLOG 学然后知不足 非淡泊无以明志，非宁静无以致远',
   head: [
-    ['link', { rel: 'icon', href: '/logo.png' }]
+    [
+      'link', { rel: 'icon', href: '/logo.png' },
+      'meta', { name:'keywords',content: '博客，前端，代码，个人博客，学习，兴趣，BINGOBLOG'}
+    ]
   ],
   base:'/learn-blog/dist/',
   dest: './dist',
