@@ -15,49 +15,86 @@ CSS3.0版本于1999年开始制定，2001年完成工作草案，是目前CSS最
 
   > 行内样式、内嵌样式、link引入外部样式、@import导入样式
 
-- 使用**预处理器 Sass/Less**
+- 使用**预处理器 Sass/Less**，与**后处理器PostCSS**
 
-  > 由于源生的 css 不支持变量，不支持嵌套等，
-  > 因此催生出了像 sass/less 这样的预处理器。
+  > 由于源生的 css 不支持变量，不支持嵌套等功能，催生出了sass、less、stylus这种预处理器，为css扩充语法功能。
+  >
+  > 而后处理器则可以接受css文件，实现校验css语法，进行自动加前缀等功能。
 
-- 使用**后处理器 PostCSS**
+- 现代化 [PostCss](https://www.postcss.com.cn/) 前后通吃
 
-  > PostCSS 接收一个 CSS 文件，通过使用postcss，
-  > 可以校验 css 语法或自动添加浏览器前缀
+  > 随着技术的发展，CSS也增加了less/sass的一些功能，比如嵌套、变量等一些功能；PostCss强大的插件机制，使得其可以处理css全部处理过程，且能够使用最新的css语法功能；
+  >
+  > 其中能让你使用最新的 CSS 语法插件就是：
+  >
+  >  [postcss-preset-env](https://preset-env.cssdb.org/)：PostCSS Preset Env使您可以将现代CSS转换为大多数浏览器可以理解的内容，并使用cssdb根据目标浏览器或运行时环境确定所需的polyfill。
 
-- Vue、React出现后，**使用 css 模块化**
+postcss常用插件地址：https://www.postcss.parts/
 
-  > 随着 **react、vue 等基于模块化的框架**的普及使用，我们常常将页面拆分成许多个小组件，然后拼构成一个页面。
-  > 但是遇到了一个问题，如果有**两个组件使用了一个相同的类名**，后者就会把前者的样式给覆盖掉，为了解决这个**样式命名冲突**的问题，产生出了 CSS模块化的概念。
-
-
-
-现代化 PostCss 前后通吃
-
-css-next
-
-postcss
-
-css原生已经支持变量、计算
-
-通过postcss可实现css的扩展功能
+## CSS IN JS
 
 
 
-css-doodle使用
+## JS IN CSS
 
 
 
-css in js
+## CSS Doodle
 
-js in css
+[css-doodle](https://github.com/css-doodle/css-doodle) 是一个用来绘制css图案的WEB组件， 其基于Shadow DOM V1和Custom Elements V1来构建的。该组件可以帮助轻松的使用Custom Elements、Shadow DOM和css Grid创建任何你想要的图案（css 图案）。创建出来的图案你可以运用于Web页面中。
 
+
+
+该组件通过其内部的规则（纯css）会生成一系列的div构建的css Grid。你可以使用css轻松地操作这些div（单元格，每个div就是一个单元格）来生成图案。生成的图案既可以是静态的，也可以是动态的。而其限制仅限于css本身的限制。
+
+示例
+
+```HTML
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      :root {
+        --customUnit: 100%;
+        --initBg: () => {
+          console.log(123);
+        }
+      }
+      @supports (display: flex) {
+        html,
+        body {
+          display: flex;
+          align-items: center;
+          justify-self: center;
+        }
+      }
+      html,
+      body {
+        width: var(--customUnit);
+        height: var(--customUnit);
+        background: #0a0c27;
+      }
+    </style>
+    <script src="https://unpkg.com/css-doodle@0.8.5/css-doodle.min.js"></script>
+  </head>
+  <body>
+    <css-doodle>
+      :doodle{ @grid : 1 x 10 / 61.8vmax; } @place-cell:center; @size:calc(
+      @index() * 10%); border-width:calc(@index() * 1vmin); border-style:
+      dashed; border-radius: 50%; border-color: hsla(calc(20*@index()), 70%,
+      68%, calc(3/@index()*.8)); --d:@rand(20s,40s); --rf:@rand(360deg);
+      --rt:calc(var(--rf) + @pick(1turn,-1turn)); animation: spin var(--d)
+      cubic-bezier(.13,.69,1,-0.01) infinite; @keyframes spin { from{ transform:
+      rotate(var(--rf)); } to{ transform: rotate(var(--rt)); } }
+    </css-doodle>
+  </body>
+</html>
 ```
-import home from './home.css'
-console.log(home)
-```
 
-
+![](../img/css-doodle.gif)
 
 
 
