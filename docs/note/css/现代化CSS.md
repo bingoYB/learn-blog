@@ -136,9 +136,9 @@ CSS.registerProperty({
 | `<transform-list>`    | 转换函数                                    |
 | `<custom-ident>`      | ident                                       |
 
-### [Worklets](https://developer.mozilla.org/en-US/docs/Web/API/Worklet)
+### Worklets
 
-`Worklets`是渲染引擎的扩展，从概念上来讲它类似于Web Workers，但有几个重要的区别：
+[`Worklets`](https://developer.mozilla.org/en-US/docs/Web/API/Worklet)是渲染引擎的扩展，从概念上来讲它类似于Web Workers，但有几个重要的区别：
 
 1. 设计为并行，每个`Worklets`必须始终有两个或更多的实例，它们中的任何一个都可以在被调用时运行
 2. 作用域较小，限制不能访问全局作用域的API（Worklet的函数除外）
