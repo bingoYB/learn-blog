@@ -78,7 +78,7 @@ CSS in JS是一种解决css问题想法的集合，而不是一个指定的库�
 
 Houdini是一组底层API，它公开了CSS引擎的各个部分，如下图所示展示了每个环节对应的新API（灰色部分各大浏览器还未实现），从而使开发人员能够通过加入浏览器渲染引擎的样式和布局过程来扩展CSS。Houdini是一群来自Mozilla，Apple，Opera，Microsoft，HP，Intel和Google的工程师组成的工作小组设计而成的。它们使开发者可以直接访问CSS对象模型（CSSOM），使开发人员可以编写浏览器可以解析为CSS的代码，从而创建新的CSS功能，而无需等待它们在浏览器中本地实现。
 
-![img](..\img\css-houdini.png)
+![img](../img/css-houdini.png)
 
 ### Properties & Values API
 
