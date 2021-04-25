@@ -1,33 +1,4 @@
-# RPC远程调用
-
-1. grpc 相比 http 的优势？
-
-2. rpc 的调用流程？前端怎么调用 grpc 的？
-
-3. 为什么要用 grpc？
-
-   1. 生态
-
-   - Nginx。gRPC有Nginx加持（详见 [此处](https://nginx.org/en/docs/http/ngx_http_grpc_module.html)），可以方便的配置 证书、负载均衡等。此外还有其他众多软件，只要支持HTTP/2的，自然就能支持gRPC。
-
-   - 众多语言支持
-
-     2、性能
-
-     - Protobuf。Protobuf的压缩率是非常高的，可以参考 [这里](https://auth0.com/blog/beating-json-performance-with-protobuf/)， 即使你对gRPC没有兴趣，也应该去读一下[Protobuf编码规则](https://developers.google.com/protocol-buffers/docs/encoding)， 相信会对你有所启发。
-     - HTTP/2。HTTP/2的优势很多
-
-     3、强类型。强类型，也就是说，写的时候，编译器会帮你检查很多东西，这样就不会留着在运行时报错，正所谓动态一时爽，重构火葬场。 从我个人体验来说，强类型的确能够帮助减少很多bug。
-
-     4、自动生成SDK。当你对接很多RESTful API时，你会发现，每个语言都要封装一份SDK，否则就只能大家都裸写JSON，这是一件很蛋疼的 重复劳动的事情，gRPC解决了这个痛点(其它RPC大多也解决了)。
-
-4. 服务发现为什么用 ip，而不用域名？
-
-5. 编写 grpc 服务和 http 服务的区别？
-
-6. Grpc 的优缺点？
-
-一、什么是RPC
+# RPC
 
 RPC 的全称是 Remote Procedure Call 是一种进程间通信方式。它允许程序调用另一个地址空间（通常是共享网络的另一台机器上）的过程或函数，而不用程序员显式编码这个远程调用的细节。即无论是调用本地接口/服务的还是远程的接口/服务，本质上编写的调用代码基本相同。
 
@@ -39,9 +10,7 @@ RPC 是一个请求响应模型。客户端发起请求，服务器返回响应�
 
 RPC 在使用形式上像调用本地函数（或方法）一样去调用远程的函数（或方法）。
 
-
-
-RPC调用的流程
+RPC调用的流程:
 
      要让网络通信细节对使用者透明，我们自然需要对通信细节进行封装，我们先看下一个RPC调用的流程：
 
@@ -57,15 +26,50 @@ RPC调用的流程
 8）client stub接收到消息，并进行解码；
 9）服务消费方得到最终结果。
 
+## 既 REST ，何 RPC ？
+在 OpenStack 里的进程间通信方式主要有两种，一种是基于HTTP协议的RESTFul API方式，另一种则是RPC调用。
 
+- 前者（RESTful）主要用于各组件之间的通信，或者说用于组件对外提供调用接口
+- 而后者（RPC）则用于同一组件中各个不同模块之间的通信。
 
-[**Grpc接口的优缺点**](https://www.cnblogs.com/seedss/p/12835566.html)
-
-**简介**
+## GRPC
 
 gRPC 一开始由 Google 开发，是一款语言中立、平台中立、开源的远程过程调用(RPC)系统。
 
 在 gRPC 里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容易地创建分布式应用和服务。与许多 RPC 系统类似，gRPC 也是基于以下理念：定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。在服务端实现这个接口，并运行一个 gRPC 服务器来处理客户端调用。在客户端拥有一个存根能够像服务端一样的方法。
+
+
+1. grpc 相比 http 的优势？
+
+2. rpc 的调用流程？前端怎么调用 grpc 的？
+
+3. 为什么要用 grpc？
+
+   1. 生态
+
+   - Nginx。gRPC有Nginx加持（详见 [此处](https://nginx.org/en/docs/http/ngx_http_grpc_module.html)），可以方便的配置 证书、负载均衡等。此外还有其他众多软件，只要支持HTTP/2的，自然就能支持gRPC。
+
+   - 众多语言支持
+   
+   2. 性能
+
+     - Protobuf。Protobuf的压缩率是非常高的，可以参考 [这里](https://auth0.com/blog/beating-json-performance-with-protobuf/)， 即使你对gRPC没有兴趣，也应该去读一下[Protobuf编码规则](https://developers.google.com/protocol-buffers/docs/encoding)， 相信会对你有所启发。
+     - HTTP/2。HTTP/2的优势很多
+
+   3. 强类型。强类型，也就是说，写的时候，编译器会帮你检查很多东西，这样就不会留着在运行时报错，正所谓动态一时爽，重构火葬场。 从我个人体验来说，强类型的确能够帮助减少很多bug。
+
+   4. 自动生成SDK。当你对接很多RESTful API时，你会发现，每个语言都要封装一份SDK，否则就只能大家都裸写JSON，这是一件很蛋疼的 重复劳动的事情，gRPC解决了这个痛点(其它RPC大多也解决了)。
+
+5. 编写 grpc 服务和 http 服务的区别？
+
+     (比较 gRPC 服务和 HTTP API)[https://docs.microsoft.com/zh-cn/aspnet/core/grpc/comparison?view=aspnetcore-5.0]
+
+6. Grpc 的优缺点？
+
+
+[**Grpc接口的优缺点**](https://www.cnblogs.com/seedss/p/12835566.html)
+
+
 
 **gRPC的特性**
 

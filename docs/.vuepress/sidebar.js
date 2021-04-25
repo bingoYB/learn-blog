@@ -1,46 +1,35 @@
 // note
+const {getChildren} = require("vuepress-sidebar-atuo")
+
+const notePath = './docs/note'
+
+console.log(getChildren(`${notePath}/css`))
+
 const note = [
   {
     title: 'CSS',
     collapsable: true,
-    children: [
-      'css/定位与布局',
-      'css/现代化CSS',
-    ]
+    children: getChildren(`${notePath}/css`)
   },
   {
     title: '编程思想',
     collapsable: true,
-    children: [
-      '编程思想/函数式编程',
-      '编程思想/面向切面编程',
-      '编程思想/SOLID设计原则',
-      '编程思想/IOC控制反转DI依赖注入',
-    ]
+    children: getChildren(`${notePath}/编程思想`)
   },
   {
     title: 'JavaScript',
     collapsable: true,
-    children: [
-      'javascript/webpack5新特性',
-      'javascript/webpack打包优化之路'
-    ]
+    children: getChildren(`${notePath}/javascript`)
   },
   {
     title: 'HTTP',
     collapsable: true,
-    children: [
-      'HTTP/RPC',
-      'HTTP/HTTP',
-      'HTTP/TCP协议'
-    ]
+    children: getChildren(`${notePath}/HTTP`)
   },
   {
     title: 'Node',
     collapsable: true,
-    children: [
-      'Node/PM2工作机制',
-    ]
+    children: getChildren(`${notePath}/Node`)
   },
 ]
 

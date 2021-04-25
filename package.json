@@ -2,7 +2,9 @@
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.5.4",
     "@vuepress/plugin-medium-zoom": "^1.5.4",
-    "vuepress": "^1.5.2"
+    "vuepress": "^1.5.2",
+    "vuepress-plugin-side-anchor": "^1.0.6",
+    "vuepress-sidebar-atuo": "^1.0.4"
   },
   "scripts": {
     "dev": "vuepress dev docs",

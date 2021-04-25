@@ -34,5 +34,6 @@ module.exports = {
   plugins: [
     ["@vuepress/medium-zoom", true],
     ["@vuepress/back-to-top", true],
+    ['vuepress-plugin-side-anchor']
   ],
 }
