@@ -2,39 +2,34 @@
 
 
 
-## 快速上手
+## 目的
 
-webpack 是一款项目模块打包器
+webpack 是一款项目模块打包器，为我们项目开发带来很大的便利性，但是同时也会存在打包上的一些问题，为了提升打包体验，我们就需要对打包流程进行优化，主要优化目的有两个：
 
-起步，快速上手移步至 [webpack 概念](https://www.webpackjs.com/concepts/)
+- 加快打包速度   ----提升开发上线体验
+- 减小打包出的文件体积     ----提升网页加载性能
+
+
 
 ## 思路
 
-使用 **打包分析**得出结果，
+- **打包分析**：分析打包出的文件大小，与打包中各个环节的打包速度
+- **缓存加速**：利用缓存来加快打包速度
+- **静态资源处理**：提取出一些不变的静态代码库，放置外链中
+- **多线程、多核加速**：利用计算机多核的优势，进行多核压缩、打包
+- html处理：利用H5的一些新特性，加快网页加载速度
 
-对 loader 慢处理 **缓存加速**
+...
 
-对**静态代码**处理 代码分析
+如果实在还是特别慢，嗯？😑 可以考虑集群编译吧，分模块打包，通过 jenkins 配置自动化，shell 脚本，通过免密登录 scp 到本地
 
-**多线程**加速压缩 多核优化
 
-对 html 处理 html
-
-对图片处理 image
-
-...(忘了？往下看)
-
-如果实在还是特别慢，嗯？😑 考虑集群编译吧，分模块打包，通过 jenkins 配置自动化，shell 脚本，通过免密登录 scp 到本地
-
-##### 提速↑
-
-打包 4 秒 -> 1 秒不到的快感, 你能体会么？
 
 ## 分析
 
 ### 速度分析
 
-利用插件 [speed-measure-webpack-plugin](https://www.npmjs.com/package/speed-measure-webpack-plugin)
+利用插件 [speed-measure-webpack-plugin](https://www.npmjs.com/package/speed-measure-webpack-plugin) 
 
 安装
 
@@ -59,7 +54,7 @@ const webpackConfig = smp.wrap(webpackConfig);
 
 ### 输出文件分析
 
-#### [webpack-dashboard](https://www.npmjs.com/package/webpack-dashboard) 
+#### 工具一：[webpack-dashboard](https://www.npmjs.com/package/webpack-dashboard) 
 
 增强了 webpack 的输出，包含依赖的⼤⼩、进度和其他细节。
 
@@ -100,7 +95,7 @@ module.exports = {
 
 
 
-#### [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) 
+#### 工具二：[webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) 
 
 打包结果分析
 
@@ -129,11 +124,11 @@ module.exports = {
 
 
 
-#### 监控文件大小
+#### 工具三：监控文件大小
 
 集成到CI 监控⽂件的⼤⼩ https://github.com/siddharthkp/bundlesize
 
-#### 其他分析方式
+#### 工具四：其他分析方式
 
 执行以下命令，将输出的文件上传到[webpack-chart](http://alexkuz.github.io/webpack-chart/)或者[analyse](http://webpack.github.io/analyse/)上
 
@@ -227,7 +222,7 @@ module.exports = {
 ##### 多线程编译
 
 1. 开启多核压缩 [happypack](https://www.npmjs.com/package/happypack) 多线程编译 
-2. webpack 不⽀持的情况下使⽤ [thread-loader](https://www.npmjs.com/package/thread-loader) **慎用该插件**，
+2. webpack 不⽀持的情况下使⽤ [thread-loader](https://www.npmjs.com/package/thread-loader) **请仅在耗时的 loader 上使用**，
 
 ##### 多线程压缩
 
@@ -310,7 +305,7 @@ new HtmlWebpackPlugin({
 
 ## 代码分析
 
-[prepack-webpack-plugin](https://www.npmjs.com/package/prepack-webpack-plugin) 代码求值，静态代码分析
+[prepack-webpack-plugin](https://www.npmjs.com/package/prepack-webpack-plugin)  代码求值，静态代码分析
 
 [@babel/plugin-syntax-dynamic-import](https://www.npmjs.com/package/@babel/plugin-syntax-dynamic-import) 动态引⼊
 
