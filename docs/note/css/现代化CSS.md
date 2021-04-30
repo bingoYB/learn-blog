@@ -35,7 +35,7 @@ postcss常用插件地址：https://www.postcss.parts/
 
 CSS in JS是一种解决css问题想法的集合，而不是一个指定的库。从CSS in JS的字面意思可以看出，它是将css样式写在JavaScript文件中，而不需要独立出.css、.less之类的文件。将css放在js中使我们更方便的使用js的变量、模块化、tree-shaking。还解决了css中的一些问题，譬如：更方便解决基于状态的样式，更容易追溯依赖关系，生成唯一的选择器来锁定作用域。尽管CSS in JS不是一个很新的技术，但国内的普及程度并不高。由于Vue和Angular都有属于他们自己的一套定义样式的方案，React本身也没有管用户怎样定义组件的样式，所以CSS in JS在React社区的热度比较高。
 
-目前为止实现CSS in JS的第三方库有很多:点击这里。像JSS、styled-components等。
+目前为止实现CSS in JS的第三方库有很多:[点击这里]([CSS-in-JS (michelebertoli.github.io)](http://michelebertoli.github.io/css-in-js/))。像JSS、styled-components等。
 
 关于css-in-js的多种库，你可以在[cssinjs-playground](https://www.cssinjsplayground.com/)快速体验不同css-in-js的实现的网站。
 

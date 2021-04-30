@@ -31,6 +31,11 @@ const note = [
     collapsable: true,
     children: getChildren(`${notePath}/Node`)
   },
+  {
+    title: 'React',
+    collapsable: true,
+    children: getChildren(`${notePath}/React`)
+  }
 ]
 
 const algorithm = []
