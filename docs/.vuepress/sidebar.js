@@ -35,6 +35,21 @@ const note = [
     title: 'React',
     collapsable: true,
     children: getChildren(`${notePath}/React`)
+  },
+  {
+    title: 'webpack',
+    collapsable: true,
+    children: getChildren(`${notePath}/webpack`)
+  },
+  {
+    title: '前端图形学',
+    collapsable: true,
+    children: getChildren(`${notePath}/graphics`)
+  },
+  {
+    title: '前端工程化',
+    collapsable: true,
+    children: getChildren(`${notePath}/engineering`)
   }
 ]
 
