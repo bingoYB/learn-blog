@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>源码分析（3） | BINGO BLOG</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/learn-blog/dist/logo.png">meta
+    <meta name="description" content="BINGO BLOG 学然后知不足 非淡泊无以明志，非宁静无以致远">
+    
+    <link rel="preload" href="/learn-blog/dist/assets/css/0.styles.8fc16687.css" as="style"><link rel="preload" href="/learn-blog/dist/assets/js/app.0791fdb8.js" as="script"><link rel="preload" href="/learn-blog/dist/assets/js/2.d1d214e8.js" as="script"><link rel="preload" href="/learn-blog/dist/assets/js/18.683c70ca.js" as="script"><link rel="prefetch" href="/learn-blog/dist/assets/js/10.246c993e.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/11.cebbae68.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/12.07fac521.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/13.5f854a11.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/14.263fbeac.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/15.541171ca.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/16.f426badc.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/17.9562e608.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/19.f9c7ec30.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/20.b3f3a132.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/21.09fb1c88.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/22.7c994109.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/23.5e8bf7d6.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/24.029797a1.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/25.1df13070.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/26.77799684.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/27.90037ecb.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/28.69b644d7.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/29.af276fb8.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/3.e262dd11.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/30.e9ab5f1a.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/31.f0a63059.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/32.f305b7ef.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/33.8352d366.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/4.21388214.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/5.6e3ee120.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/6.b5021011.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/7.a677ba69.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/8.04e1f2da.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/9.a880d423.js">
+    <link rel="stylesheet" href="/learn-blog/dist/assets/css/0.styles.8fc16687.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/learn-blog/dist/" class="home-link router-link-active"><img src="/learn-blog/dist/logo.png" alt="BINGO BLOG" class="logo"> <span class="site-name can-hide">BINGO BLOG</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/learn-blog/dist/note/" class="nav-link router-link-active">
+  博客
+</a></div><div class="nav-item"><a href="/learn-blog/dist/algorithm/" class="nav-link">
+  算法
+</a></div> <a href="https://github.com/bingoYB/learn-blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/learn-blog/dist/note/" class="nav-link router-link-active">
+  博客
+</a></div><div class="nav-item"><a href="/learn-blog/dist/algorithm/" class="nav-link">
+  算法
+</a></div> <a href="https://github.com/bingoYB/learn-blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>CSS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>编程思想</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JavaScript</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>HTTP</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Node</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>React</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/learn-blog/dist/note/React/源码（1）.html" class="sidebar-link">源码分析（1）</a></li><li><a href="/learn-blog/dist/note/React/源码（2）.html" class="sidebar-link">源码分析（2）</a></li><li><a href="/learn-blog/dist/note/React/源码（3）.html" class="active sidebar-link">源码分析（3）</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/learn-blog/dist/note/React/源码（3）.html#scheduleupdateonfiber" class="sidebar-link">scheduleUpdateOnFiber</a></li><li class="sidebar-sub-header"><a href="/learn-blog/dist/note/React/源码（3）.html#performsyncworkonroot" class="sidebar-link">performSyncWorkOnRoot</a></li><li class="sidebar-sub-header"><a href="/learn-blog/dist/note/React/源码（3）.html#renderrootsync" class="sidebar-link">renderRootSync</a></li><li class="sidebar-sub-header"><a href="/learn-blog/dist/note/React/源码（3）.html#workloopsync" class="sidebar-link">workLoopSync</a></li><li class="sidebar-sub-header"><a href="/learn-blog/dist/note/React/源码（3）.html#performunitofwork" class="sidebar-link">performUnitOfWork</a></li></ul></li><li><a href="/learn-blog/dist/note/React/源码（4）.html" class="sidebar-link">源码（4）</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>webpack</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端图形学</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端工程化</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="源码分析-3"><a href="#源码分析-3" class="header-anchor">#</a> 源码分析（3）</h1> <h2 id="scheduleupdateonfiber"><a href="#scheduleupdateonfiber" class="header-anchor">#</a> scheduleUpdateOnFiber</h2> <p>在前面流程中 render 后会执行 <strong>updateContainer</strong>，最后调用 <strong>scheduleUpdateOnFiber</strong></p> <p>执行调度工作在fiber ， 调度模块</p> <ul><li><p>逻辑：</p> <p>1 更新触发点fiber的lanes, 对应所有父节点fiber 的childLanes,</p> <p>2 在fiberRoot 上增加lans 和eventTime,</p> <p>3 当在render时，直接合并</p> <p>4 逻辑分支， 当更新为同步，非同步更新，</p></li> <li><p>且非render,commit 阶段，直接performSyncWorkOnRoot ，同步，其他情况， flushSyncCallbackQueue</p></li> <li><p>异步更新时 ensureRootIsScheduled</p></li></ul> <div class="language-js line-numbers-mode"><pre class="language-js"><code>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">scheduleUpdateOnFiber</span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane<span class="token punctuation">,</span>
+  eventTime<span class="token operator">:</span> number<span class="token punctuation">,</span> <span class="token comment">//触发更新的时间</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// update 中数量控制</span>
+  <span class="token comment">// 检查最大update的数量是否超过了最大值</span>
+  <span class="token function">checkForNestedUpdates</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 找到 rootFiber 并遍历更新子节点的 lane</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">markUpdateLaneFromFiberToRoot</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token comment">// root 不存在时， 开发报错  fiberRoot </span>
+    <span class="token function">warnAboutUpdateOnUnmountedFiberInDEV</span><span class="token punctuation">(</span>fiber<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// Mark that the root has a pending update.</span>
+  <span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">,</span> eventTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 如果当前是workInProget</span>
+  <span class="token comment">// 已经在进行调度</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root <span class="token operator">===</span> workInProgressRoot<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">// 存在数据的时候</span>
+    <span class="token comment">// 在渲染过程中收到一个更新，标识有个交叉更新工作在root上，除非·推迟渲染阶段更新下个批处理·标志为false </span>
+    <span class="token comment">// 在这种情况下，由于向后兼容的原因，我们不会将渲染阶段更新视为交错处理。 </span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span> 
+      deferRenderPhaseUpdateToNextBatch <span class="token operator">||</span>
+      <span class="token punctuation">(</span>executionContext <span class="token operator">&amp;</span> RenderContext<span class="token punctuation">)</span> <span class="token operator">===</span> NoContext
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// 在commit 的阶段吗？</span>
+      <span class="token comment">// 在render 阶段， 或者 deferRenderPhaseUpdateToNextBatch</span>
+      <span class="token comment">// 当前的环境</span>
+      <span class="token comment">// 没有在 非（commit  render） 或在 commit , 才需要进行调度？ 16.6</span>
+      <span class="token comment">// 对lanes 进行合并</span>
+      workInProgressRootUpdatedLanes <span class="token operator">=</span> <span class="token function">mergeLanes</span><span class="token punctuation">(</span>
+        workInProgressRootUpdatedLanes<span class="token punctuation">,</span>
+        lane<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">// 优先级合并</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgressRootExitStatus <span class="token operator">===</span> RootSuspendedWithDelay<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// 推测时suspend</span>
+      <span class="token comment">//  标识root为暂停</span>
+      <span class="token function">markRootSuspended</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> workInProgressRootRenderLanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 获取当前环境的优先级</span>
+  <span class="token keyword">const</span> priorityLevel <span class="token operator">=</span> <span class="token function">getCurrentPriorityLevel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// executionContext  执行环境  同步更新时</span>
+ <span class="token comment">// 同步更新的时候</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>lane <span class="token operator">===</span> SyncLane<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 非批量更新 ，且 未进行render 或commit</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      <span class="token comment">// Check if we're inside unbatchedUpdates</span>
+      <span class="token punctuation">(</span>executionContext <span class="token operator">&amp;</span> LegacyUnbatchedContext<span class="token punctuation">)</span> <span class="token operator">!==</span> NoContext <span class="token operator">&amp;&amp;</span>
+      <span class="token comment">// Check if we're not already rendering</span>
+      <span class="token punctuation">(</span>executionContext <span class="token operator">&amp;</span> <span class="token punctuation">(</span>RenderContext <span class="token operator">|</span> CommitContext<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">===</span> NoContext
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token comment">// 非同步更新， 且在非render commit 阶段</span>
+      <span class="token comment">// 处于非LegacyUnbatchedContext 批量， 且不处于render和commit</span>
+      <span class="token comment">// Register pending interactions on the root to avoid losing traced interaction data.</span>
+       <span class="token comment">// 第一次不执行</span>
+      <span class="token function">schedulePendingInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token comment">// 执行同步的更新</span>
+      <span class="token function">performSyncWorkOnRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span> <span class="token comment">// 其他情况</span>
+        
+      <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> eventTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">// 注册或更新pendingInteractions——update的集合</span>
+      <span class="token function">schedulePendingInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">// 没有上下文的情况</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>executionContext <span class="token operator">===</span> NoContext<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+           <span class="token comment">// 立即更新同步队列</span>
+          <span class="token comment">// 马上清空同步任务，除非我们已经进入batch。</span>
+        <span class="token comment">// 故意将其放在scheduleUpdateOnFiber而不是scheduleCallbackForFiber中，以保留安排回调的功能无需立即清空。</span>
+        <span class="token comment">// 我们仅针对用户发起的操作更新，以保留旧版模式的历史行为。</span>
+        <span class="token function">resetRenderTimer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 同步的更新</span>
+        <span class="token function">flushSyncCallbackQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+     <span class="token comment">// 异步的更新的时候</span>
+    <span class="token comment">// Schedule a discrete update but only if it's not Sync.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      <span class="token punctuation">(</span>executionContext <span class="token operator">&amp;</span> DiscreteEventContext<span class="token punctuation">)</span> <span class="token operator">!==</span> NoContext <span class="token operator">&amp;&amp;</span> <span class="token comment">// 执行上下文为离散事件</span>
+      <span class="token comment">//  优先级为UserBlockingSchedulerPriority 或ImmediateSchedulerPriority</span>
+      <span class="token punctuation">(</span>priorityLevel <span class="token operator">===</span> UserBlockingSchedulerPriority <span class="token operator">||</span>
+        priorityLevel <span class="token operator">===</span> ImmediateSchedulerPriority<span class="token punctuation">)</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// This is the result of a discrete event. Track the lowest priority</span>
+      <span class="token comment">// discrete update per root so we can flush them early, if needed.</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rootsWithPendingDiscreteUpdates <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        rootsWithPendingDiscreteUpdates <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Set</span><span class="token punctuation">(</span><span class="token punctuation">[</span>root<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 在rootsWithPendingDiscreteUpdates 添加root , 暂不理解</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        rootsWithPendingDiscreteUpdates<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// Schedule other updates after in case the callback is sync.</span>
+    <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> eventTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">schedulePendingInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  mostRecentlyUpdatedRoot <span class="token operator">=</span> root<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br></div></div><p>这个方法分支很多，很复杂，因为首次执行肯定是同步任务，所以先分析同步任务执行，所以抛开其他暂时不想关的，简化一下</p> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">scheduleUpdateOnFiber</span><span class="token punctuation">(</span>
+  fiber<span class="token operator">:</span> Fiber<span class="token punctuation">,</span>
+  lane<span class="token operator">:</span> Lane<span class="token punctuation">,</span>
+  eventTime<span class="token operator">:</span> number<span class="token punctuation">,</span> <span class="token comment">//触发更新的时间</span>
+<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// update 中数量控制</span>
+  <span class="token comment">// 检查最大update的数量是否超过了最大值</span>
+  <span class="token function">checkForNestedUpdates</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 实现警告， render 中调用setState</span>
+  <span class="token function">warnAboutRenderPhaseUpdatesInDEV</span><span class="token punctuation">(</span>fiber<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 找到 rootFiber 并遍历更新子节点的 lane</span>
+  <span class="token keyword">const</span> root <span class="token operator">=</span> <span class="token function">markUpdateLaneFromFiberToRoot</span><span class="token punctuation">(</span>fiber<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Mark that the root has a pending update. 打标记</span>
+  <span class="token function">markRootUpdated</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">,</span> eventTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 获取当前环境的优先级</span>
+  <span class="token keyword">const</span> priorityLevel <span class="token operator">=</span> <span class="token function">getCurrentPriorityLevel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 第一次不执行</span>
+  <span class="token function">schedulePendingInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lane<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">// 传入FiberRoot对象, 执行同步更新</span>
+  <span class="token function">performSyncWorkOnRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  mostRecentlyUpdatedRoot <span class="token operator">=</span> root<span class="token punctuation">;</span>
+ <span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br></div></div><p>其主要核心就是执行performSyncWorkOnRoot</p> <h2 id="performsyncworkonroot"><a href="#performsyncworkonroot" class="header-anchor">#</a> performSyncWorkOnRoot</h2> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">performSyncWorkOnRoot</span><span class="token punctuation">(</span><span class="token parameter">root</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// 初次渲染不进入</span>
+  <span class="token function">flushPassiveEffects</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> lanes<span class="token punctuation">;</span>
+  <span class="token keyword">let</span> exitStatus<span class="token punctuation">;</span>
+  <span class="token comment">// 初次渲染不进入， workInProgressRoot  为null </span>
+   <span class="token comment">// 已经进入workInProgressRoot有值， 且， 过期</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>
+    root <span class="token operator">===</span> workInProgressRoot <span class="token operator">&amp;&amp;</span>
+    <span class="token function">includesSomeLane</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>expiredLanes<span class="token punctuation">,</span> workInProgressRootRenderLanes<span class="token punctuation">)</span>
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// There's a partial tree, and at least one of its lanes has expired. Finish</span>
+    <span class="token comment">// rendering it before rendering the rest of the expired work.</span>
+    <span class="token comment">// 这是一颗不完整的树，并且最少其中一条lane已经过期，完成渲染</span>
+ 	<span class="token comment">// 在渲染其余过期工作之前，请完成渲染</span>
+    lanes <span class="token operator">=</span> workInProgressRootRenderLanes<span class="token punctuation">;</span>
+    exitStatus <span class="token operator">=</span> <span class="token function">renderRootSync</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>
+      <span class="token function">includesSomeLane</span><span class="token punctuation">(</span>
+        workInProgressRootIncludedLanes<span class="token punctuation">,</span>
+        workInProgressRootUpdatedLanes<span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 渲染包括在渲染阶段更新的lanes。</span>
+      <span class="token comment">// 例如，当取消隐藏隐藏的树时，我们包括所有lanes</span>
+      <span class="token comment">// 隐藏树时先前已跳过的内容。该lanes是我们开始渲染时使用的lanes的超集。</span>
+      <span class="token comment">// 请注意，这仅在部分树被渲染时发生</span>
+      <span class="token comment">// 同时。如果整个树是同步呈现的，则没有交错事件。</span>
+      lanes <span class="token operator">=</span> <span class="token function">getNextLanes</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">// 处理更新</span>
+      exitStatus <span class="token operator">=</span> <span class="token function">renderRootSync</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 首次渲染进入这里</span>
+    lanes <span class="token operator">=</span> <span class="token function">getNextLanes</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> NoLanes<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 当前lanes</span>
+    exitStatus <span class="token operator">=</span> <span class="token function">renderRootSync</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// lanes ： 1</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// root.tag 为有其他模式, 有错误的情况</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>root<span class="token punctuation">.</span>tag <span class="token operator">!==</span> LegacyRoot <span class="token operator">&amp;&amp;</span> exitStatus <span class="token operator">===</span> RootErrored<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    executionContext <span class="token operator">|=</span> RetryAfterError<span class="token punctuation">;</span>
+    <span class="token comment">// If an error occurred during hydration,</span>
+    <span class="token comment">// discard server response and fall back to client side render.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>root<span class="token punctuation">.</span>hydrate<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      root<span class="token punctuation">.</span>hydrate <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      <span class="token function">clearContainer</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>containerInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// If something threw an error, try rendering one more time. We'll render</span>
+    <span class="token comment">// synchronously to block concurrent data mutations, and we'll includes</span>
+    <span class="token comment">// all pending updates are included. If it still fails after the second</span>
+    <span class="token comment">// attempt, we'll give up and commit the resulting tree.</span>
+    lanes <span class="token operator">=</span> <span class="token function">getLanesToRetrySynchronouslyOnError</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>lanes <span class="token operator">!==</span> NoLanes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      exitStatus <span class="token operator">=</span> <span class="token function">renderRootSync</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+    <span class="token comment">// 致命错误</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>exitStatus <span class="token operator">===</span> RootFatalErrored<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> fatalError <span class="token operator">=</span> workInProgressRootFatalError<span class="token punctuation">;</span>
+    <span class="token function">prepareFreshStack</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> NoLanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">markRootSuspended</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">throw</span> fatalError<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// We now have a consistent 一致的 tree. Because this is a sync render, we</span>
+  <span class="token comment">// will commit it even if something suspended.</span>
+  <span class="token comment">// 标示完成的工作</span>
+  <span class="token keyword">const</span> finishedWork<span class="token operator">:</span> Fiber <span class="token operator">=</span> <span class="token punctuation">(</span>root<span class="token punctuation">.</span>current<span class="token punctuation">.</span>alternate<span class="token operator">:</span> any<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  root<span class="token punctuation">.</span>finishedWork <span class="token operator">=</span> finishedWork<span class="token punctuation">;</span>
+  root<span class="token punctuation">.</span>finishedLanes <span class="token operator">=</span> lanes<span class="token punctuation">;</span>
+  <span class="token comment">// 开始commitRoot的部分</span>
+  <span class="token function">commitRoot</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Before exiting, make sure there's a callback scheduled for the next</span>
+  <span class="token comment">// pending level.</span>
+  
+  <span class="token function">ensureRootIsScheduled</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> <span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br></div></div><p>这个方法主要工作分为两部分</p> <ul><li><p>render    renderRootSync</p> <p>render阶段以一个Fibe节点为单元，采用递归的方式，实现workInprogress的树的快速搭建。 搭建过程中还会实现如下功能：</p> <ul><li>更新 state和props</li> <li>调用部分生命周期钩子函数</li> <li>新旧children diff，标记更新</li> <li>找出DOM需要更新的属性，并标记更新</li> <li>预生成新增的Dom对象，先挂载在fiber上</li></ul></li> <li><p>commit    commitRoot</p> <p>这个阶段相比第一个阶段，任务很轻，就是遍历effect list， 执行side effects，将数据的更新体现到UI上，这个阶段会涉及UI的更新。</p> <ul><li>执行所有的effect list 节点的生命周期函数getSnapshotBeforeUpdate</li> <li>执行所有的effect list 节点Dom 更新，ref 删除，以及componentWillUnmount 生命周期函数的调用</li> <li>将workFinished tree设置为current tree</li> <li>执行所有的effect list 节点的mutation 生命周期函数，ref的添加</li></ul></li></ul> <h2 id="renderrootsync"><a href="#renderrootsync" class="header-anchor">#</a> renderRootSync</h2> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token comment">// 逻辑： 开始同步更新</span>
+<span class="token keyword">function</span> <span class="token function">renderRootSync</span><span class="token punctuation">(</span><span class="token parameter">root<span class="token operator">:</span> FiberRoot<span class="token punctuation">,</span> lanes<span class="token operator">:</span> Lanes</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> prevExecutionContext <span class="token operator">=</span> executionContext<span class="token punctuation">;</span>
+  <span class="token comment">// 切换到渲染执行上下文</span>
+  executionContext <span class="token operator">|=</span> RenderContext<span class="token punctuation">;</span>
+  <span class="token comment">// 初始上下文为8 ，非批量同步： 8 ， RenderContext： render: 16</span>
+  <span class="token comment">// hooks相关 </span>
+  <span class="token keyword">const</span> prevDispatcher <span class="token operator">=</span> <span class="token function">pushDispatcher</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// If the root or lanes have changed, throw out the existing stack</span>
+  <span class="token comment">// and prepare a fresh one. Otherwise we'll continue where we left off.</span>
+  <span class="token comment">// 如果root或者lanes改变，丢弃现有的栈</span>
+  <span class="token comment">// 而且准备一个新的，否则我们会继续离开我们所在的地方</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgressRoot <span class="token operator">!==</span> root <span class="token operator">||</span> workInProgressRootRenderLanes <span class="token operator">!==</span> lanes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token comment">// 准备一个当前fiber节点的克隆 放在全局变量workInProgress中</span>
+    <span class="token function">prepareFreshStack</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 不处理</span>
+    <span class="token function">startWorkOnPendingInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">const</span> prevInteractions <span class="token operator">=</span> <span class="token function">pushInteractions</span><span class="token punctuation">(</span>root<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>enableDebugTracing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">logRenderStarted</span><span class="token punctuation">(</span>lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableSchedulingProfiler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">markRenderStarted</span><span class="token punctuation">(</span>lanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">do</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 进行更新， workLook </span>
+      <span class="token comment">// 循环处理workInProgress</span>
+      <span class="token function">workLoopSync</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>thrownValue<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">handleError</span><span class="token punctuation">(</span>root<span class="token punctuation">,</span> thrownValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">resetContextDependencies</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableSchedulerTracing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">popInteractions</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>prevInteractions<span class="token operator">:</span> any<span class="token punctuation">)</span><span class="token operator">:</span> Set<span class="token operator">&lt;</span>Interaction<span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   <span class="token comment">// render 过程结束，还原上下文</span>
+  executionContext <span class="token operator">=</span> prevExecutionContext<span class="token punctuation">;</span>
+  <span class="token function">popDispatcher</span><span class="token punctuation">(</span>prevDispatcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgress <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// This is a sync render, so we should have finished the whole tree.</span>
+    <span class="token function">invariant</span><span class="token punctuation">(</span>
+      <span class="token boolean">false</span><span class="token punctuation">,</span>
+      <span class="token string">'Cannot commit an incomplete root. This error is likely caused by a '</span> <span class="token operator">+</span>
+      <span class="token string">'bug in React. Please file an issue.'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableSchedulingProfiler<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">markRenderStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// Set this to null to indicate there's no in-progress render.</span>
+  <span class="token comment">// 清空  workInProgressRoot   设置为null,没有正在进行的render</span>
+  workInProgressRoot <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>  <span class="token comment">// 清空  workInProgressRoot </span>
+  workInProgressRootRenderLanes <span class="token operator">=</span> NoLanes<span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> workInProgressRootExitStatus<span class="token punctuation">;</span>  <span class="token comment">// 返回执行结果</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br></div></div><p>renderRootSync主要步骤就是</p> <p>在这里，prepareFreshStack会为接下来工作做一些准备，这个方法会准备一个当前fiber节点的克隆 放在全局变量workInProgress中，执行完后的结构如下</p> <p><img src="/learn-blog/dist/assets/img/React1.95fe7abb.png" alt="React前结构"></p> <p>这里有两个比较重要的全局对象</p> <ul><li>workInProgressRoot：当前根对象，指向FiberRoot，FiberRoot中的current指向当前页面使用的Fiber树</li> <li>workInProgress：当前工作进程中的Fiber树</li></ul> <p>当更新工作完成是，就将workInProgressRoot.current指向workInProgress，这样就完成了前后的替换更新工作，用的是双缓存原理</p> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">prepareFreshStack</span><span class="token punctuation">(</span><span class="token parameter">root<span class="token operator">:</span> FiberRoot<span class="token punctuation">,</span> lanes<span class="token operator">:</span> Lanes</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  root<span class="token punctuation">.</span>finishedWork <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  root<span class="token punctuation">.</span>finishedLanes <span class="token operator">=</span> NoLanes<span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> timeoutHandle <span class="token operator">=</span> root<span class="token punctuation">.</span>timeoutHandle<span class="token punctuation">;</span>  <span class="token comment">// 获取当前的timeoutHander</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>timeoutHandle <span class="token operator">!==</span> noTimeout<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// The root previous suspended and scheduled a timeout to commit a fallback</span>
+    <span class="token comment">// state. Now that we have additional work, cancel the timeout.</span>
+    root<span class="token punctuation">.</span>timeoutHandle <span class="token operator">=</span> noTimeout<span class="token punctuation">;</span> <span class="token comment">// 清空</span>
+    <span class="token comment">// $FlowFixMe Complains noTimeout is not a TimeoutID, despite the check above</span>
+    <span class="token function">cancelTimeout</span><span class="token punctuation">(</span>timeoutHandle<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 取消</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// 如果workInProgress 不为空， 有任务没有完成</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>workInProgress <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> interruptedWork <span class="token operator">=</span> workInProgress<span class="token punctuation">.</span>return<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>interruptedWork <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">unwindInterruptedWork</span><span class="token punctuation">(</span>interruptedWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      interruptedWork <span class="token operator">=</span> interruptedWork<span class="token punctuation">.</span>return<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  workInProgressRoot <span class="token operator">=</span> root<span class="token punctuation">;</span> <span class="token comment">// 赋值 fiberRoot</span>
+  workInProgress <span class="token operator">=</span> <span class="token function">createWorkInProgress</span><span class="token punctuation">(</span>root<span class="token punctuation">.</span>current<span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token comment">// 我们使用双重缓冲池技术</span>
+      <span class="token comment">// 因为我们知道我们最多需要一颗数的两个版本</span>
+      <span class="token comment">// 我们将&quot;其他&quot;未使用的资源合并这样我们就可以自由的重用其他节点</span>
+      <span class="token comment">// 这个懒创建是为了避免分配额外的一些永不更新的对象</span>
+      <span class="token comment">// 如果需要，这也允许我们回收额外的内存</span>
+  <span class="token comment">// 更新lanes    </span>
+  workInProgressRootRenderLanes <span class="token operator">=</span> subtreeRenderLanes <span class="token operator">=</span> workInProgressRootIncludedLanes <span class="token operator">=</span> lanes<span class="token punctuation">;</span>
+  workInProgressRootExitStatus <span class="token operator">=</span> RootIncomplete<span class="token punctuation">;</span>
+  workInProgressRootFatalError <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  workInProgressRootSkippedLanes <span class="token operator">=</span> NoLanes<span class="token punctuation">;</span>
+  workInProgressRootUpdatedLanes <span class="token operator">=</span> NoLanes<span class="token punctuation">;</span>
+  workInProgressRootPingedLanes <span class="token operator">=</span> NoLanes<span class="token punctuation">;</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableSchedulerTracing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    spawnedWorkDuringRender <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>__DEV__<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ReactStrictModeWarnings<span class="token punctuation">.</span><span class="token function">discardPendingWarnings</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br></div></div><h2 id="workloopsync"><a href="#workloopsync" class="header-anchor">#</a> workLoopSync</h2> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">workLoopSync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// Already timed out, so perform work without checking if we need to yield.</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>workInProgress <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">performUnitOfWork</span><span class="token punctuation">(</span>workInProgress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h2 id="performunitofwork"><a href="#performunitofwork" class="header-anchor">#</a> performUnitOfWork</h2> <p>performUnitOfWork 方法调用 beginWork 找到处理对应组件的 hander 方法
+采用深度优先（先序优先）的方式遍历创建子节点，遇到同级节点下有多个子节点时，会为每
+个节点创建一个 sibling 属性指向下一个同级节点
+当遍历到某个分支的最深节点（没有子节点）时调用 completeUnitOfWork 方法
+completeUnitOfWork 方法判断如果有 sibling（下一个同级节点）则返回给 performUnitOfWork
+没有 sibling 则寻找 return（父节点），如果父节点有 sibling 继续返回给 performUnitOfWork
+从而实现深度优先遍历去创建整个 Fiber tree</p> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token keyword">function</span> <span class="token function">performUnitOfWork</span><span class="token punctuation">(</span><span class="token parameter">unitOfWork<span class="token operator">:</span> Fiber</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+  <span class="token comment">// The current, flushed, state of this fiber is the alternate. Ideally</span>
+  <span class="token comment">// nothing should rely on this, but relying on it here means that we don't</span>
+  <span class="token comment">// need an additional field on the work in progress.</span>
+  <span class="token comment">// 创建一个备份的fiber</span>
+    <span class="token comment">// 最理想的情况是不依靠current fiber, 创建一个workInProgress</span>
+    <span class="token comment">// 创建一个workInProgress的alternate属性指向current fiber</span>
+  <span class="token keyword">const</span> current <span class="token operator">=</span> unitOfWork<span class="token punctuation">.</span>alternate<span class="token punctuation">;</span>
+  <span class="token function">setCurrentDebugFiberInDEV</span><span class="token punctuation">(</span>unitOfWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">let</span> next<span class="token punctuation">;</span>
+   <span class="token comment">// ProfileMode 模式问题， ProfileMode 模式下</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>enableProfilerTimer <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>unitOfWork<span class="token punctuation">.</span>mode <span class="token operator">&amp;</span> ProfileMode<span class="token punctuation">)</span> <span class="token operator">!==</span> NoMode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">startProfilerTimer</span><span class="token punctuation">(</span>unitOfWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    next <span class="token operator">=</span> <span class="token function">beginWork</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> unitOfWork<span class="token punctuation">,</span> subtreeRenderLanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">stopProfilerTimerIfRunningAndRecordDelta</span><span class="token punctuation">(</span>unitOfWork<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 正常的流程</span>
+    <span class="token comment">// 已经使用的fiber, 更新的fiber,  subtreeRenderLanes: 当前的的lane</span>
+    next <span class="token operator">=</span> <span class="token function">beginWork</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> unitOfWork<span class="token punctuation">,</span> subtreeRenderLanes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token function">resetCurrentDebugFiberInDEV</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  unitOfWork<span class="token punctuation">.</span>memoizedProps <span class="token operator">=</span> unitOfWork<span class="token punctuation">.</span>pendingProps<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>next <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// If this doesn't spawn new work, complete the current work.</span>
+    <span class="token function">completeUnitOfWork</span><span class="token punctuation">(</span>unitOfWork<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 定义completeUnitOfWork </span>
+  <span class="token comment">/*
+  功能:
+  ① 协助 workLoopSync 深度优先（先序优先）遍历生成 Fiber 树，原理：
+  当 workLoopSync 遍历到当前分支最深的节点时向上寻找父节点并判断父节点有无同级节点，
+  有的话将 workInProgress 其设置为此节点，从而实现寻找下一个节点
+  ② 判断 effectTag 创建副作用链表（由子结点往上指向父节点）
+  ③ 调用 completeWork 方法
+  
+  疑问 ① 为什要创建副作用链表 答：当项目复杂时 Fiber 树拥有很多很多的节点，
+  如果通过遍历每个节点的方式去运行当前节点副作用的话时间复杂度会上升，
+  所以在构建树的时候通过判断每个节点的 effectTag
+  将副作用关联起来生成一个链表可以有效的降低时间复杂度提升程序效率。
+  
+  疑问 ② 为什么子结点的副作用要排在父节点的副作用之前：
+  答：副作用处理 componentDidMount 生命周期和 ref，
+  根据生命周期 componentDidMount 的定义可以知道只有当子组件渲染完成时，
+  父组件的 componentDidMount 生命周期才会被调用，所以子组件的 componentDidMount
+   生命周期运行一定在父组件之前，因此副作用链表排序是符合功能实现的，ref 方法也同理，
+   父组件通过子组件的 ref 获取实例时应该确保子组件的 ref 已经被处理。
+  */</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    workInProgress <span class="token operator">=</span> next<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  ReactCurrentOwner<span class="token punctuation">.</span>current <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br></div></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">更新时间:</span> <span class="time">5/6/2021, 9:45:56 AM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/learn-blog/dist/note/React/源码（2）.html" class="prev">
+        源码分析（2）
+      </a></span> <span class="next"><a href="/learn-blog/dist/note/React/源码（4）.html">
+        源码（4）
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----><section class="side-anchor"><ul style="display:none;"></ul></section></div></div>
+    <script src="/learn-blog/dist/assets/js/app.0791fdb8.js" defer></script><script src="/learn-blog/dist/assets/js/2.d1d214e8.js" defer></script><script src="/learn-blog/dist/assets/js/18.683c70ca.js" defer></script>
+  </body>
+</html>
