@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>构建最小字典序 | BINGO BLOG</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/learn-blog/dist/logo.png">meta
+    <meta name="description" content="BINGO BLOG 学然后知不足 非淡泊无以明志，非宁静无以致远">
+    
+    <link rel="preload" href="/learn-blog/dist/assets/css/0.styles.8fc16687.css" as="style"><link rel="preload" href="/learn-blog/dist/assets/js/app.c44c183b.js" as="script"><link rel="preload" href="/learn-blog/dist/assets/js/2.d1d214e8.js" as="script"><link rel="preload" href="/learn-blog/dist/assets/js/21.020172c6.js" as="script"><link rel="prefetch" href="/learn-blog/dist/assets/js/10.dd584e68.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/11.d1b1bc33.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/12.07fac521.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/13.5f854a11.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/14.28c37e21.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/15.33371b83.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/16.a1cc41ec.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/17.18b48f34.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/18.d6ee5662.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/19.f9c7ec30.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/20.b3f3a132.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/22.89cbe5e3.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/23.c7a1fba9.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/24.43a5f314.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/25.f2ed9e6c.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/26.c688cba9.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/27.7703d18c.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/28.7a46dd44.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/29.557eccb9.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/3.a46b0b91.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/30.83469689.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/31.457fd7f9.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/32.dcc1a5d0.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/33.bc955035.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/34.7e3c5629.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/4.d2d79ac6.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/5.df9d1e5f.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/6.6cb1845e.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/7.afe53b6b.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/8.6adb49c7.js"><link rel="prefetch" href="/learn-blog/dist/assets/js/9.be540ff6.js">
+    <link rel="stylesheet" href="/learn-blog/dist/assets/css/0.styles.8fc16687.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/learn-blog/dist/" class="home-link router-link-active"><img src="/learn-blog/dist/logo.png" alt="BINGO BLOG" class="logo"> <span class="site-name can-hide">BINGO BLOG</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/learn-blog/dist/note/" class="nav-link">
+  博客
+</a></div><div class="nav-item"><a href="/learn-blog/dist/algorithm/" class="nav-link router-link-active">
+  算法
+</a></div> <a href="https://github.com/bingoYB/learn-blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/learn-blog/dist/note/" class="nav-link">
+  博客
+</a></div><div class="nav-item"><a href="/learn-blog/dist/algorithm/" class="nav-link router-link-active">
+  算法
+</a></div> <a href="https://github.com/bingoYB/learn-blog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <!----> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="构建最小字典序"><a href="#构建最小字典序" class="header-anchor">#</a> 构建最小字典序</h2> <h3 id="题目"><a href="#题目" class="header-anchor">#</a> 题目</h3> <p>给定长度为N的字符串S（只包含大写英文字母），要构造一个长度为N的字符串T。起初，T是一个空串，随后反复进行下列任意操作。</p> <p>从S的头部删除一个字符，加到T的尾部 ；</p> <p>从S的尾部删除一个字符，加到T的尾部。</p> <p>目标是要构造字典序尽可能小的字符串T</p> <blockquote><p>字典序小：按照字母顺序，或者数字小大顺序，由小到大的形成序列</p></blockquote> <p><strong>输入</strong>：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>ACDBCB
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p><strong>输出</strong></p> <div class="language- line-numbers-mode"><pre class="language-text"><code>ABCBCD
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><p><strong>实现</strong></p> <div class="language-js line-numbers-mode"><pre class="language-js"><code>
+<span class="token keyword">function</span> <span class="token function">change</span><span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">let</span> rs <span class="token operator">=</span> <span class="token string">''</span>
+  <span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> j <span class="token operator">=</span> str<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> j<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> head <span class="token operator">=</span> str<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    <span class="token keyword">const</span> tail <span class="token operator">=</span> str<span class="token punctuation">[</span>j<span class="token punctuation">]</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>head<span class="token operator">&gt;</span>tail<span class="token punctuation">)</span><span class="token punctuation">{</span>
+      rs<span class="token operator">+=</span>tail
+      j<span class="token operator">--</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>head <span class="token operator">&lt;</span> tail<span class="token punctuation">)</span><span class="token punctuation">{</span>
+      rs<span class="token operator">+=</span>head
+      i<span class="token operator">++</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+      <span class="token keyword">let</span> a <span class="token operator">=</span> i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span>b<span class="token operator">=</span>j<span class="token operator">-</span><span class="token number">1</span>
+      <span class="token keyword">while</span> <span class="token punctuation">(</span>a<span class="token operator">&lt;=</span>b<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">const</span> head <span class="token operator">=</span> str<span class="token punctuation">[</span>a<span class="token punctuation">]</span>
+        <span class="token keyword">const</span> tail <span class="token operator">=</span> str<span class="token punctuation">[</span>b<span class="token punctuation">]</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>head<span class="token operator">===</span>tail<span class="token punctuation">)</span><span class="token punctuation">{</span>
+          <span class="token keyword">if</span><span class="token punctuation">(</span>a<span class="token operator">===</span>b<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            rs <span class="token operator">+=</span> str<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+            i<span class="token operator">++</span>
+            <span class="token keyword">break</span>
+          <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            a<span class="token operator">++</span>
+            b<span class="token operator">--</span>
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>head<span class="token operator">&gt;</span>tail<span class="token punctuation">)</span><span class="token punctuation">{</span>
+          rs <span class="token operator">+=</span> str<span class="token punctuation">[</span>j<span class="token punctuation">]</span>
+          j<span class="token operator">--</span>
+          <span class="token keyword">break</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+          rs <span class="token operator">+=</span> str<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+          i<span class="token operator">++</span>
+          <span class="token keyword">break</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  rs <span class="token operator">+=</span> str<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+
+  <span class="token keyword">return</span> rs
+<span class="token punctuation">}</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'ACACBA'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br></div></div><p><strong>解析</strong></p> <p>很多人都说这里要用贪心算法，但我觉得这里使用双指针更合适吧</p></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">更新时间:</span> <span class="time">5/6/2021, 1:17:01 PM</span></div></footer> <!----> </main></div><div class="global-ui"><!----><section class="side-anchor"><ul style="display:none;"></ul></section></div></div>
+    <script src="/learn-blog/dist/assets/js/app.c44c183b.js" defer></script><script src="/learn-blog/dist/assets/js/2.d1d214e8.js" defer></script><script src="/learn-blog/dist/assets/js/21.020172c6.js" defer></script>
+  </body>
+</html>
