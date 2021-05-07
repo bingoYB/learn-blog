@@ -8,52 +8,70 @@ console.log(getChildren(`${notePath}/css`))
 const note = [
   {
     title: 'CSS',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/css`)
   },
   {
     title: '编程思想',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/编程思想`)
   },
   {
     title: 'JavaScript',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/javascript`)
   },
   {
     title: 'HTTP',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/HTTP`)
   },
   {
     title: 'Node',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/Node`)
   },
   {
     title: 'React',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/React`)
   },
   {
     title: 'webpack',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/webpack`)
   },
   {
     title: '前端图形学',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/graphics`)
   },
   {
     title: '前端工程化',
-    collapsable: true,
+    collapsable: false,
     children: getChildren(`${notePath}/engineering`)
   }
 ]
 
-const algorithm = []
+const algorithmPath = './docs/algorithm'
+
+const algorithm = [
+  {
+    title: '每日一题',
+    collapsable: false,
+    children: getChildren(`${algorithmPath}/every`)
+  },
+  {
+    title: '基础算法',
+    collapsable: false,
+    children: getChildren(`${algorithmPath}/basic`)
+  },
+  {
+    title: '数据结构',
+    collapsable: false,
+    children: getChildren(`${algorithmPath}/struct`)
+  },
+]
 
 module.exports = {
     '/note/': note,
