@@ -168,9 +168,7 @@ url -> 添加请求头等包装 -> tcp协议进行打包 -> 继续打包
 
 ## 查看TCP连接状态
 
-shell 中输入，命令更多参数参考 [netstat](https://hondrytravis.github.io/docs/linux/linux#netstat)
-
-Copy
+shell 中输入，命令更多参数参考 [netstat](https://www.runoob.com/linux/linux-comm-netstat.html)
 
 netstat -an
 
@@ -221,15 +219,3 @@ https://www.jianshu.com/p/5b07a2f05771
 慢启动-》拥塞避免-》拥塞发生-》快速恢复
 
 
-
-### DNS解析过程
-
-1、首先客户端位置是一台电脑或手机，在打开浏览器以后，比如输入[http://www.zdns.cn](https://link.zhihu.com/?target=http%3A//www.zdns.cn)的域名，它首先是由浏览器发起一个DNS解析请求，如果本地缓存服务器中找不到结果，则首先会向根服务器查询，根服务器里面记录的都是各个顶级域所在的服务器的位置，当向根请求[http://www.zdns.cn](https://link.zhihu.com/?target=http%3A//www.zdns.cn)的时候，根服务器就会返回.cn服务器的位置信息。
-
-2、递归服务器拿到.cn的权威服务器地址以后，就会寻问cn的权威服务器，知不知道[http://www.zdns.cn](https://link.zhihu.com/?target=http%3A//www.zdns.cn)的位置。这个时候cn权威服务器查找并返回[http://zdns.cn](https://link.zhihu.com/?target=http%3A//zdns.cn)服务器的地址。
-
-3、继续向[http://zdns.cn](https://link.zhihu.com/?target=http%3A//zdns.cn)的权威服务器去查询这个地址，由[http://zdns.cn](https://link.zhihu.com/?target=http%3A//zdns.cn)的服务器给出了地址：202.173.11.10
-
-4、最终才能进行http的链接，顺利访问网站。
-
-5、这里补充说明，一旦递归服务器拿到解析记录以后，就会在本地进行缓存，如果下次客户端再请求本地的递归域名服务器相同域名的时候，就不会再这样一层一层查了，因为本地服务器里面已经有缓存了，这个时候就直接把[http://www.zdns.cn](https://link.zhihu.com/?target=http%3A//www.zdns.cn)的A记录返回给客户端就可以了。
