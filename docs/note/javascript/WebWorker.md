@@ -1,412 +1,387 @@
-## PWA之Workbox缓存策略分析
-
-> 此文章摘录于：[PWA之Workbox缓存策略分析_weixin_33877092的博客-CSDN博客](https://blog.csdn.net/weixin_33877092/article/details/87960332)
-
-> 本文主要分析通过workbox(基于1.x和2.x版本，未来3.x版本会有新的结构)生成Service-Worker的缓存策略，workbox是GoogleChrome团队对原来sw-precache和sw-toolbox的封装，并且提供了Webpack和Gulp插件方便开发者快速生成sw.js文件。
-
-### precache（预缓存）
-
-首先看一下 workbox 提供的 Webpack 插件 workboxPlugin 的三个最主要参数：
-
-- globDirectory
-- staticFileGlobs
-- swDest
-
-其中 `globDirectory` 和 `staticFileGlobs` 会决定需要缓存的静态文件，这两个参数也存在默认值，插件会从compilation参数中获取开发者在 Webpack 配置的 `output.path` 作为 globDirectory 的默认值，`staticFileGlobs` 的默认配置是 html，js，css 文件，如果需要缓存一些界面必须的图片，这个地方需要自己配置。
-
-之后 Webpack 插件会将配置作为参数传递给 workbox-build 模块，workbox-build 模块中会根据 globDirectory 和 staticFileGlobs 读取文件生成一份配置信息，交给 precache 处理。需要注意的是，precache里不要存太多的文件，workbox-build 对文件会有一个过滤， 该模块会读取利用 node 的 fs 模块读取文件，如果文件大于2M则不会加入配置中（可以通过配置 maximumFileSize 修改），同时会根据文件的 buffer 生成一个 hash 值，也就是说就算开发者不改变文件名，只要文件内容修改了，也会生成一个新的配置内容，让浏览器更新缓存。
-
-那么说了那么多，precache 到底干了什么，看一下生成的sw文件：
-
-```js
-const fileManifest = [
-  {
-    'url': 'main.js',
-    'revision': '0e438282dc400829497725a6931f66e3'
-  },
-  {
-    'url': 'main.css',
-    'revision': '02ba19bb320adb687e08dded3e71408d'
-  }
-];
-const workboxSW = new self.WorkboxSW();
-workboxSW.precache(fileManifest);
-```
-
-那还是需要看一下 precache 的代码:
-
-```js
-precache(revisionedFiles) {
-  this._revisionedCacheManager.addToCacheList({
-    revisionedFiles,
-  })
-}
-```
-
-是的，workbox会提供一个对象 `revisionedCacheManager` 来管理所有的缓存，先不管里面具体怎么处理的，往下看有个 `registerInstallActivateEvents`。
-
-```js
-_registerInstallActivateEvents(skipWating, clientsClaim) {
-
-  self.addEventListener('install', (event) => {
-    const cachedUrls = this._revisionedCacheManager.getCachedUrls();
-    event.waitUntil(
-      this._revisionedCacheManager.install().then(() => {
-        if (skipWaiting) {
-          return self.skipWaiting();
-        }
-      })
-    )
-}
-```
+# Web Worker
 
-这里可以看出，所有的 precache 都会在 service worker 的 install 事件中完成。`event.waitUntil` 会根据内部promise的结果来确定安装是否完成。如果安装失败，则会舍弃这个ServiceWorker。
+> 此文章摘录于：[[Web Worker 使用教程 - 阮一峰的网络日志 (ruanyifeng.com)](http://www.ruanyifeng.com/blog/2018/07/web-worker.html)](https://blog.csdn.net/weixin_33877092/article/details/87960332)
+>
 
-现在看一下 `_revisionedCacheManager.install` 里干了什么，首先 `revisionedFiles` 会被放在一个 Map 中，当然这个 `revisionedFiles` 是已经被处理过了， 在经过 `addToCacheList` ->`_addEntries` -> `_parseEntry` 的过程后，会返回：
+## 一、概述
 
-```js
-{
-  entryID,
-  revision,
-  request: new Request(url),
-  cacheBust
-}
-```
+JavaScript 语言采用的是单线程模型，也就是说，所有任务只能在一个线程上完成，一次只能做一件事。前面的任务没做完，后面的任务只能等着。随着电脑计算能力的增强，尤其是多核 CPU 的出现，单线程带来很大的不便，无法充分发挥计算机的计算能力。
 
-entryID 不主动传入可以视为用户传入的url，将用来作为IndexDB中的key存储revision，而request则用来提供给之后的fetch请求，cacheBust默认为true，功能等会再分析。
+![img](https://www.wangbase.com/blogimg/asset/201807/bg2018070801.png)
 
-Map 的set 过程在 `_addEntries` 的 `_addEntryToInstallList` 函数中，这里只需注意因为 fileManifest 中不能存放具有相同 url （或者说entryID）的值，不然会被警告。
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。这样的好处是，一些计算密集型或高延迟的任务，被 Worker 线程负担了，主线程（通常负责 UI 交互）就会很流畅，不会被阻塞或拖慢。
 
-现在回来看install，install是一个async函数，返回一个包含一系列Promise请求的Promise.all，符合waitUntil的要求。每一个需要缓存的文件会到 cacheEntry 函数中处理：
+Worker 线程一旦新建成功，就会始终运行，不会被主线程上的活动（比如用户点击按钮、提交表单）打断。这样有利于随时响应主线程的通信。但是，这也造成了 Worker 比较耗费资源，不应该过度使用，而且一旦使用完毕，就应该关闭。
 
-```js
-async _cacheEntry(precacheEntry) {
+Web Worker 有以下几个使用注意点。
 
-  const isCached = await this._isAlreadyCached(precacheEntry);
-  const precacheDetails = {
-    url: precacheEntry.request.url,
-    revision: precacheEntry.revision,
-    wasUpdated: !isCached,
-  };
-  if (isCached) {
-    return precacheDetails;
-  }
-  try {
-    await this._requestWrapper.fetchAndCache({
-      request: precacheEntry.getNetworkRequest(),
-      waitOnCache: true,
-      cacheKey: precacheEntry.request,
-      cleanRedirects: true,
-    });
-    await this._onEntryCached(precacheEntry);
-    return precacheDetails;
-  } catch (err) {
-    throw new WorkboxError('request-not-cached', {
-      url: precacheEntry.request.url,
-      error: err,
-    });
-  }
-}
-```
+（1）**同源限制**
 
-对于每一个请求会去通过 `_isAlreadyCached` 方法访问indexDB 得知是否被缓存过。这里可能有读者会疑惑，我们不是不能在 fileManifest 中不允许存储同样的url，为什么还要查是否缓存过，这是因为当你sw文件更新后，原来的缓存还是存在的，它们或许持有相同的url，如果它们的revision也相同，就不用获取了。
+分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
 
-在 _cacheEntry 内部，还有两个异步操作，一个是通过包装后的 `requestWrapper` 的 `fetchAndCache` 请求并缓存数据，一个是通过 `_onEntryCached` 方法更新indexDB，可以看到虽然catch了错误，但依旧会throw出来，意味着任何一个precache的文件请求失败，都会终止此次install。
+（2）**DOM 限制**
 
-这里另一个需要注意的地方是 `_requestWrapper.fetchAndCache`，所有请求最后都会在 `requestWrapper`中处理，这里调用的实例方法是 `fetchAndCache` ，说明这次请求会涉及到网络请求和缓存处理两部分。在发出请求后，首先会判断请求结果是否需要加入缓存中：
+Worker 线程所在的全局对象，与主线程不一样，无法读取主线程所在网页的 DOM 对象，也无法使用`document`、`window`、`parent`这些对象。但是，Worker 线程可以`navigator`对象和`location`对象。
 
-```js
-const effectiveCacheableResponsePlugin =
-  this._userSpecifiedCachableResponsePlugin ||
-  cacheResponsePlugin ||this.getDefaultCacheableResponsePlugin();
-```
+（3）**通信联系**
 
-如果没有插件配置，会使用 `getDefaultCacheableResponsePlugin()`来取得默认配置，即缓存返回状态为200的请求。
+Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成。
 
-在上面的代码中可以看到在 precache 环境下，会有两个参数为 true, 一个是 waitOnCache，另一个是cleanRedirects。waitOnCache保证在需要缓存的情况下返回网络结果时必须完成缓存的处理，cleanRedirects则会重新包装一下请求重定向的结果。
+（4）**脚本限制**
 
-最后用_onEntryCached把缓存的路径凭证信息存在indexDB中。
+Worker 线程不能执行`alert()`方法和`confirm()`方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求。
 
-在activate阶段，会对precache在cache里的内容进行clean，因为前面只做了更新，如果是新的precache没有的资源地址，在这里会删除。
+（5）**文件限制**
 
-所以 precache 就是在 service-worker 的 install 事件下完成一次对配置资源的网络请求，并在请求结果返回时完成对结果的缓存。
+Worker 线程无法读取本地文件，即不能打开本机的文件系统（`file://`），它所加载的脚本，必须来自网络。
 
-### runtimecache（运行时缓存）
+## 二、基本用法
 
-在了解 runtimecache 前，先看下 workbox-sw 的实例化过程中比较重要的部分：
+### 2.1 主线程
 
-```js
-this._runtimeCacheName = getDefaultCacheName({cacheId});
+主线程采用`new`命令，调用`Worker()`构造函数，新建一个 Worker 线程。
 
-this._revisionedCacheManager = new RevisionedCacheManager({
-  cacheId,
-  plugins,
-});
+> ```javascript
+> var worker = new Worker('work.js');
+> ```
 
-this._strategies = new Strategies({
-  cacheId
-});
+`Worker()`构造函数的参数是一个脚本文件，该文件就是 Worker 线程所要执行的任务。由于 Worker 不能读取本地文件，所以这个脚本必须来自网络。如果下载没有成功（比如404错误），Worker 就会默默地失败。
 
-this._router = new Router(
-  this._revisionedCacheManager.getCacheName(),
-  handleFetch
-);
+然后，主线程调用`worker.postMessage()`方法，向 Worker 发消息。
 
-this._registerInstallActivateEvents(skipWaiting, clientsClaim);
+> ```javascript
+> worker.postMessage('Hello World');
+> worker.postMessage({method: 'echo', args: ['Work']});
+> ```
 
-this._registerDefaultRoutes(ignoreUrlParametersMatching, directoryIndex);
+`worker.postMessage()`方法的参数，就是主线程传给 Worker 的数据。它可以是各种数据类型，包括二进制数据。
 
-```
+接着，主线程通过`worker.onmessage`指定监听函数，接收子线程发回来的消息。
 
-所以看出 workbox-sw 实例化的过程主要有生成缓存对应空间名，缓存空间，挂载缓存策略，挂载路由方法（用于处理对应路径的缓存策略），注册安装激活方法，注册默认路由。
+> ```javascript
+> worker.onmessage = function (event) {
+>   console.log('Received message ' + event.data);
+>   doSomething();
+> }
+> 
+> function doSomething() {
+>   // 执行任务
+>   worker.postMessage('Work done!');
+> }
+> ```
 
-precache 对应的就是 runtimecache，runtimecache 顾名思义就是处理所有运行时的缓存，runtimecache 往往应对着各种类型的资源，对于不同类型的资源往往也有不同的缓存策略，所以在 workbox 中使用 runtimecache 需要调用方法，`workbox.router.registerRoute` 也是说明 runtimecache 需要路由层面的细致划分。
+上面代码中，事件对象的`data`属性可以获取 Worker 发来的数据。
 
-看到最后一步的 `_registerDefaultRoutes`，看一下其中的代码，可以发现 workbox 有一个最基本的cache，这个 cache 其实处理的就是前面的 precache，这个 cache 遵从着 cacheFirst 原则：
+Worker 完成任务以后，主线程就可以把它关掉。
 
-```js
-const cacheFirstHandler = this.strategies.cacheFirst({
+> ```javascript
+> worker.terminate();
+> ```
 
-  cacheName: this._revisionedCacheManager.getCacheName(),
-  plugins,
-  excludeCacheId: true,
+### 2.2 Worker 线程
 
-});
+Worker 线程内部需要有一个监听函数，监听`message`事件。
 
-const capture = ({ url }) => {
+> ```javascript
+> self.addEventListener('message', function (e) {
+>   self.postMessage('You said: ' + e.data);
+> }, false);
+> ```
 
-  url.hash = '';
+上面代码中，`self`代表子线程自身，即子线程的全局对象。因此，等同于下面两种写法。
 
-  const cachedUrls = this._revisionedCacheManager.getCachedUrls();
-
-  if (cachedUrls.indexOf(url.href) !== -1) {
-    return true;
-  }
-
-  let strippedUrl = this._removeIgnoreUrlParams(url.href, ignoreUrlParametersMatching);
-  if (cachedUrls.indexOf(strippedUrl.href) !== -1) {
-    return true;
-  }
-
-  if (directoryIndex && strippedUrl.pathname.endsWith('/')) {
-
-    strippedUrl.pathname += directoryIndex;
-
-    return cachedUrls.indexOf(strippedUrl.href) !== -1;
-
-  }
-  return false;
-};
-
-this._precacheRouter.registerRoute(capture, cacheFirstHandler);
-```
-
-简单的说，如果你一个路径能直接在 precache 中可以找到，或者在去除了部分查询参数后符合，或者去处部分查询参数添加后缀后符合，就会直接返回缓存，至于请求过来怎么处理的，稍后再看。
-
-我们可以这么认为 precache 就是添加了 cache，至于真实请求时如何处理还是和 runtimecache 在一个地方处理，现在看来，在 workbox 初始化的时候就有了第一个 `router.registerRoute()`，之后的就需要手动注册了。
-
-在写自己注册的策略之前，考虑下，注册了 route 后，又怎么处理呢？在实例化 Router 的时候，我们就会添加一个 `self.addEventListener('fetch', (event) => {...})`，除非你手动传入一个handleFetch参数为false。
-
-在注册路由的时候，`registerRoute(capture, handler, method)`在类中接受一个捕获条件和一个句柄函数，这个捕获条件可以是字符串，正则表达式或者是直接的Route对象，当然最终都会变成 Route 对象（分别通过 ExpressRoute 和 RegExpRoute），Route对象包含匹配，处理方法，和方法（默认为 GET）。然后在注册时会使用一个 Map，以每个使用到的方法为 Key，值为包含所有Route对象的数组，在遍历时也只会遍历相应方法的值。所以你也可以给不同的方法定义同样的捕获路径。
-
-这里使用了 unshift 操作，所以每个新的配置会被压入堆栈的顶部，在遍历时则会被优先遍历到。因为 workbox 实例化是在 registerRoute 之前，所以默认配置优先级最低，配置后面的注册会优先于前面的。
-
-所以最终在页面上，你的每次请求都会被监听，到相应的请求方法数组里找有没有匹配的，如果没有匹配的话，也可以使用 `setDefaultHandler`，`setDefaultHandler`不是前面的 `_registerDefaultRoutes`，它需要开发者自己定义，并决定策略，如果定义了，所有没被匹配的请求就会被这个策略处理。请求还支持设置在，在请求被匹配却没有正确被方法处理情况下的错误处理，最终 event 会用处理方法（策略）处理这个请求，否则就正常请求。这些请求就是 workbox下的 runtimecache。
-
-### 缓存策略
-
-现在来看看 Workbox 提供的缓存策略，主要有这几种：`cache-first`,`cache-only`,`network-first`,`network-only`,`stale-while-revalidate`。
-
-在前面看到，实例化的时候会给 workbox 挂载一个 Strategies 的实例。提供上面一系列的缓存策略，但在实际调用中，使用的是 `_getCachingMechanism`，然后把整个策略类放到一参中，二参则提供了配置项，在每个策略类中都有 handle 方法的实现，最终也会调用 handle方法。那既然如此还搞个 `_getCachingMechanism`干嘛，直接返回策略类就得了，这个等下看。
-
-先看下各个策略，这里就简单说下，可以参考[离线指南](https://link.juejin.im/?target=https%3A%2F%2Fdevelopers.google.com%2Fweb%2Ffundamentals%2Finstant-and-offline%2Foffline-cookbook%2F)，虽然会有一点不一样。
-
-第一个 Cache-First, 它的 handle 方法：
-
-```js
-const cachedResponse = await this.requestWrapper.match({
-    
-  request: event.request,
-
-});
-return cachedResponse || await this.requestWrapper.fetchAndCache({
-
-  request: event.request,
-
-  waitOnCache: this.waitOnCache,
-});
-```
-
-Cache-First策略会在有缓存的时候返回缓存，没有缓存才会去请求并且把请求结果缓存，这也是我们对于precache的策略。
-
-然后是 Cache-only，它只会去缓存里拿数据，没有就失败了。
-
-network-first 是一个比较复杂的策略，它接受 networkTimeoutSeconds 参数，如果没有传这个参数，请求将会发出，成功的话就返回结果添加到缓存中，如果失败则返回立即缓存。这种网络回退到缓存的方式虽然利于那些频繁更新的资源，但是在网络情况比较差的情况（无网会直接返回缓存）下，等待会比较久，这时候 networkTimeoutSeconds 就提供了作用，如果设置了，会生成一个setTimeout后被resolve的缓存调用，再把它和请求放倒一个 Promise.race 中，那么请求超时后就会返回缓存。
-
-network-only，也比较简单，只请求，不读写缓存。
-
-最后提供的策略是 StaleWhileRevalidate，这种策略比较接近 cache-first，代码如下：
-
-```js
-const fetchAndCacheResponse = this.requestWrapper.fetchAndCache({
-
-  request: event.request,
-
-  waitOnCache: this.waitOnCache,
-
-  cacheResponsePlugin: this._cacheablePlugin,
-
-}).catch(() => Response.error());
-
-const cachedResponse = await this.requestWrapper.match({
-
-  request: event.request,
-
-});
-
-return cachedResponse || await fetchAndCacheResponse;
-```
-
-他们的区别在于就算有缓存，它仍然会发出请求，请求的结果会用来更新缓存，也就是说你的下一次访问的如果时间足够请求返回的话，你就能拿到最新的数据了。
-
-可以看到离线指南中还提供了缓存然后访问网络再更新页面的方法，但这种需要配合主进程代码的修改，WorkBox 没有提供这种模式。
-
-### 自定义缓存配置
-
-回到在缓存策略里提到的，讲讲 `_getCachingMechanism`和缓存策略的参数。默认支持5个参数：'cacheExpiration', 'broadcastCacheUpdate', 'cacheableResponse', 'cacheName', 'plugins'，(当然你会发现还有几个参数不在这里处理，比如你可以传一个自定义的 requestWrapper, 前面提到的 waitOnCache 和 NetworkFirst 支持的 networkTimeoutSeconds)，先看一个完整的示例：
-
-```js
-const workboxSW = new WorkboxSW();
-
-const cacheFirstStrategy = workboxSW.strategies.cacheFirst({
-  cacheName: 'example-cache',
-  cacheExpiration: {
-    maxEntries: 10,
-    maxAgeSeconds: 7 * 24 * 60 * 60
-  },
-  broadcastCacheUpdate: {
-    channelName: 'example-channel-name'
-  },
-  cacheableResponse: {
-    stses: [0, 200, 404],
-    headers: {
-      'Example-Header-1': 'Header-Value-1',
-      'Example-Header-2': 'Header-Value-2'
-    }
-  }
-
-  plugins: [
-    // Additional Plugins
-  ]
-});
-```
-
-大致可以认定的是 cacheExpiration 会用来处理缓存失效，cacheName 决定了 cache 的索引名，cacheableResponse 则决定了什么请求返回可以被缓存。
-
-那么插件到底是怎么被处理，现在可以看`_getCachingMechanism`函数了，`_getCachingMechanism`函数处理了什么，它其实就是把 `cacheExpiration`，`broadcastCacheUpdate`,`cacheabelResponse`里的参数找到对应方法，传入参数实例化，然后挂在在封装后的wrapperOptions的plugins参数里，但是只是实例化了有什么用呢？这里有关键的一步：
-
-```js
-options.requestWrapper = new RequestWrapper(wrapperOptions);
-```
-
-所以最终这些插件还是会在 RequestWrapper 里处理，这里的一些操作是我们之前没有提到的，来看下 RequestWrapper 里怎么处理的。
-
-看下 RequestWrapper 的构造函数，取其中涉及到 plugins 的部分：
-
-```js
-constructor({cacheName, cacheId, plugins, fetchOptions, matchOptions} = {}) {
-
-  this.plugins = new Map();
-  
-  if (plugins) {
-  
-    isArrayOfType({plugins}, 'object');
-    
-    plugins.forEach((plugin) => {
-      for (let callbackName of pluginCallbacks) {
-        if (typeof plugin[callbackName] === 'function') {
-          if (!this.plugins.has(callbackName)) {
-            this.plugins.set(callbackName, []);
-          } else if (callbackName === 'cacheWillUpdate') {
-            throw ErrorFactory.createError(
-              'multiple-cache-will-update-plugins');
-          } else if (callbackName === 'cachedResponseWillBeUsed') {
-            throw ErrorFactory.createError(
-              'multiple-cached-response-will-be-used-plugins');
-          }
-          this.plugins.get(callbackName).push(plugin);
-          }
-        }
-    });
-  }
-
-}
-```
-
-plugins是一个Map，默认支持以下几种Key：`cacheDidUpdate`, `cacheWillUpdate`, `fetchDidFail`, `requestWillFetch`, `cachedResponseWillBeUsed`。可以理解为 requestWrapper 提供了一些hooks或者生命周期，而插件就是在 hook 上进行一些处理。
-
-这里举个缓存失效的例子看看怎么处理：
-
-首先我们需要实例化CacheExpirationPlugin，CacheExpirationPlugin没有构造函数，实例化的是CacheExpiration，然后在this上添加maxEntries，maxAgeSeconds。所有的 hook 方法实现都放在了 CacheExpirationPlugin，提供了两个 hook: cachedResponseWillBeUsed 和 cacheDidUpdate，cachedResponseWillBeUsed 会在 RequestWrapper的match中执行，cacheDidUpdate 在 fetchAndCache中 执行。
-
-这里可以看出，每个plugin其实就是对hook或者生命周期调用的具体实现，在把response扔到cache里之后，调用了插件的cacheDidUpdate方法，看下CacheExpirationPlugin中的cacheDidUpdate：
-
-```
-async cacheDidUpdate({cacheName, newResponse, url, now} = {}) {
-  isType({cacheName}, 'string');
-
-  isInstance({newResponse}, Response);
-
-  if (typeof now === 'undefined') {
-    now = Date.now();
-  }
-  await this.updateTimestamp({cacheName, url, now});
-  await this.expireEntries({cacheName, now});
-}
-```
-
-那么关键就是更新时间戳和失效条数，如果设置了更新时间戳会怎么样呢，在请求的时候，runtimecache也会添加到IndexedDB，值存入的是一个对象，包含了一个url和时间戳。
-
-这个时间戳怎么生效，CacheExpirationPlugin提供了另外一个方法，cachedResponseWillBeUsed:
-
-```
-cachedResponseWillBeUsed({cachedResponse, cachedResponse, now} = {}) {
-  if (this.isResponseFresh({cachedResponse, now})) {
-    return cachedResponse;
-  }
-  return null;
-}
-```
-
-RequestWrapper中的match方法会默认从cache里取，取到的是当时的完整 response, 在cache的 response 里的 headers 里取到 date，然后把当时的date加上 maxAgeSecond 和 现在的时间比， 如果小于了就返回 false，那么自然会去发起请求了。
-
-CacheableResponsePlugin用来控制 fetchAndCache 里的 cacheable，它设置了一个 cacheWillUpdate，可以设置哪些 http status 或者 headers 的 response 要缓存，做到更精细的缓存操作。
-
-### 如何配置我的缓存
-
-离线指南已经提供了一些缓存方式，在 workbox 中，可以大致认为，有一些资源会直接影响整个应用的框架能否显示的（开发应用的 JS，CSS 和部分图片）可以做 precache，这些资源一般不存在“异步”的加载，它们如果不显示整个页面无法正常加载。
-
-那他们的更新策略也很简单，一般这些资源的更新需要发版，而在这里用更新sw文件更新。
-
-对于大部分无状态（注意无状态）数据请求，推荐StaleWhileRevalidate方式或者缓存回退，在某些后端数据变化比较快的情况下，添加失效时间也是可以的，对于其它（业务图片）需求，cache-first比较适用。
-
-最后需要讨论的是页面和有状态的请求，页面是一个比较复杂的情况，页面如果是纯静态的，那么可以放入precache。但要注意，如果我们的页面不是打包工具生成的，页面文件很可能不在dist目录下，那么怎么追踪变化呢，这里推荐一种方式，我们的页面往往有一个模版，和一个json串配置hash变量，那么你可以添加这种模式：
-
-```
-templatedUrls: {
-  path: [
-    '.../xxx.html',
-    '.../xxx.json'
-  ]
-}
-```
-
-如果没有json，就需要关联所有可能影响生成页面的数据了，那么这些文件的变化都会改变最后生成的sw文件。
-
-如果你在页面上有一些动态信息（比如用户信息等等），那就比较麻烦了，推荐使用 network-first 配合一个合适的失败时间，毕竟大家都不希望用户登录了另一个账号，显示的还是上一个账号，这同样适用于那些使用cookie（有状态）的请求，这些请求也推荐你添加失效策略，和失败状态。
-
-永远记住你的目标，让用户能够更快的看到页面，但不要给用户一个错误的页面。
-
-### 总结
-
-在目前的网络环境下，service worker 的推送服务并不能得到很好的利用，所以使用 service worker 很大程度就是利用其强大的缓存能力给用户在弱网和无网环境的优化，甚至可以通过判断网络环境进行一些预下载，丰富页面的交互。但是一个错误的缓存策略可能会使用户得不到最新的内容，每一个致力于使用 service worker 或者 PWA 的开发者都需要了解其缓存的处理。Google 提供了一系列的工具能够快速生成优质的sw文件，但是配套文档过分简单和无本地化让这些配置如同一个黑盒，使开发者很难确定正确的配置方案。希望能够阅读本文，解决读者这方面的困惑。
+> ```javascript
+> // 写法一
+> this.addEventListener('message', function (e) {
+>   this.postMessage('You said: ' + e.data);
+> }, false);
+> 
+> // 写法二
+> addEventListener('message', function (e) {
+>   postMessage('You said: ' + e.data);
+> }, false);
+> ```
+
+除了使用`self.addEventListener()`指定监听函数，也可以使用`self.onmessage`指定。监听函数的参数是一个事件对象，它的`data`属性包含主线程发来的数据。`self.postMessage()`方法用来向主线程发送消息。
+
+根据主线程发来的数据，Worker 线程可以调用不同的方法，下面是一个例子。
+
+> ```javascript
+> self.addEventListener('message', function (e) {
+>   var data = e.data;
+>   switch (data.cmd) {
+>     case 'start':
+>       self.postMessage('WORKER STARTED: ' + data.msg);
+>       break;
+>     case 'stop':
+>       self.postMessage('WORKER STOPPED: ' + data.msg);
+>       self.close(); // Terminates the worker.
+>       break;
+>     default:
+>       self.postMessage('Unknown command: ' + data.msg);
+>   };
+> }, false);
+> ```
+
+上面代码中，`self.close()`用于在 Worker 内部关闭自身。
+
+### 2.3 Worker 加载脚本
+
+Worker 内部如果要加载其他脚本，有一个专门的方法`importScripts()`。
+
+> ```javascript
+> importScripts('script1.js');
+> ```
+
+该方法可以同时加载多个脚本。
+
+> ```javascript
+> importScripts('script1.js', 'script2.js');
+> ```
+
+### 2.4 错误处理
+
+主线程可以监听 Worker 是否发生错误。如果发生错误，Worker 会触发主线程的`error`事件。
+
+> ```javascript
+> worker.onerror(function (event) {
+>   console.log([
+>     'ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message
+>   ].join(''));
+> });
+> 
+> // 或者
+> worker.addEventListener('error', function (event) {
+>   // ...
+> });
+> ```
+
+Worker 内部也可以监听`error`事件。
+
+### 2.5 关闭 Worker
+
+使用完毕，为了节省系统资源，必须关闭 Worker。
+
+> ```javascript
+> // 主线程
+> worker.terminate();
+> 
+> // Worker 线程
+> self.close();
+> ```
+
+## 三、数据通信
+
+前面说过，主线程与 Worker 之间的通信内容，可以是文本，也可以是对象。需要注意的是，这种通信是拷贝关系，即是传值而不是传址，Worker 对通信内容的修改，不会影响到主线程。事实上，浏览器内部的运行机制是，先将通信内容串行化，然后把串行化后的字符串发给 Worker，后者再将它还原。
+
+主线程与 Worker 之间也可以交换二进制数据，比如 File、Blob、ArrayBuffer 等类型，也可以在线程之间发送。下面是一个例子。
+
+> ```javascript
+> // 主线程
+> var uInt8Array = new Uint8Array(new ArrayBuffer(10));
+> for (var i = 0; i < uInt8Array.length; ++i) {
+>   uInt8Array[i] = i * 2; // [0, 2, 4, 6, 8,...]
+> }
+> worker.postMessage(uInt8Array);
+> 
+> // Worker 线程
+> self.onmessage = function (e) {
+>   var uInt8Array = e.data;
+>   postMessage('Inside worker.js: uInt8Array.toString() = ' + uInt8Array.toString());
+>   postMessage('Inside worker.js: uInt8Array.byteLength = ' + uInt8Array.byteLength);
+> };
+> ```
+
+但是，拷贝方式发送二进制数据，会造成性能问题。比如，主线程向 Worker 发送一个 500MB 文件，默认情况下浏览器会生成一个原文件的拷贝。为了解决这个问题，JavaScript 允许主线程把二进制数据直接转移给子线程，但是一旦转移，主线程就无法再使用这些二进制数据了，这是为了防止出现多个线程同时修改数据的麻烦局面。这种转移数据的方法，叫做[Transferable Objects](http://www.w3.org/html/wg/drafts/html/master/infrastructure.html#transferable-objects)。这使得主线程可以快速把数据交给 Worker，对于影像处理、声音处理、3D 运算等就非常方便了，不会产生性能负担。
+
+如果要直接转移数据的控制权，就要使用下面的写法。
+
+> ```javascript
+> // Transferable Objects 格式
+> worker.postMessage(arrayBuffer, [arrayBuffer]);
+> 
+> // 例子
+> var ab = new ArrayBuffer(1);
+> worker.postMessage(ab, [ab]);
+> ```
+
+## 四、同页面的 Web Worker
+
+通常情况下，Worker 载入的是一个单独的 JavaScript 脚本文件，但是也可以载入与主线程在同一个网页的代码。
+
+> ```markup
+> <!DOCTYPE html>
+>   <body>
+>     <script id="worker" type="app/worker">
+>       addEventListener('message', function () {
+>         postMessage('some message');
+>       }, false);
+>     </script>
+>   </body>
+> </html>
+> ```
+
+上面是一段嵌入网页的脚本，注意必须指定`<script>`标签的`type`属性是一个浏览器不认识的值，上例是`app/worker`。
+
+然后，读取这一段嵌入页面的脚本，用 Worker 来处理。
+
+> ```javascript
+> var blob = new Blob([document.querySelector('#worker').textContent]);
+> var url = window.URL.createObjectURL(blob);
+> var worker = new Worker(url);
+> 
+> worker.onmessage = function (e) {
+>   // e.data === 'some message'
+> };
+> ```
+
+上面代码中，先将嵌入网页的脚本代码，转成一个二进制对象，然后为这个二进制对象生成 URL，再让 Worker 加载这个 URL。这样就做到了，主线程和 Worker 的代码都在同一个网页上面。
+
+## 五、实例：Worker 线程完成轮询
+
+有时，浏览器需要轮询服务器状态，以便第一时间得知状态改变。这个工作可以放在 Worker 里面。
+
+> ```javascript
+> function createWorker(f) {
+>   var blob = new Blob(['(' + f.toString() +')()']);
+>   var url = window.URL.createObjectURL(blob);
+>   var worker = new Worker(url);
+>   return worker;
+> }
+> 
+> var pollingWorker = createWorker(function (e) {
+>   var cache;
+> 
+>   function compare(new, old) { ... };
+> 
+>   setInterval(function () {
+>     fetch('/my-api-endpoint').then(function (res) {
+>       var data = res.json();
+> 
+>       if (!compare(data, cache)) {
+>         cache = data;
+>         self.postMessage(data);
+>       }
+>     })
+>   }, 1000)
+> });
+> 
+> pollingWorker.onmessage = function () {
+>   // render data
+> }
+> 
+> pollingWorker.postMessage('init');
+> ```
+
+上面代码中，Worker 每秒钟轮询一次数据，然后跟缓存做比较。如果不一致，就说明服务端有了新的变化，因此就要通知主线程。
+
+## 六、实例： Worker 新建 Worker
+
+Worker 线程内部还能再新建 Worker 线程（目前只有 Firefox 浏览器支持）。下面的例子是将一个计算密集的任务，分配到10个 Worker。
+
+主线程代码如下。
+
+> ```javascript
+> var worker = new Worker('worker.js');
+> worker.onmessage = function (event) {
+>   document.getElementById('result').textContent = event.data;
+> };
+> ```
+
+Worker 线程代码如下。
+
+> ```javascript
+> // worker.js
+> 
+> // settings
+> var num_workers = 10;
+> var items_per_worker = 1000000;
+> 
+> // start the workers
+> var result = 0;
+> var pending_workers = num_workers;
+> for (var i = 0; i < num_workers; i += 1) {
+>   var worker = new Worker('core.js');
+>   worker.postMessage(i * items_per_worker);
+>   worker.postMessage((i + 1) * items_per_worker);
+>   worker.onmessage = storeResult;
+> }
+> 
+> // handle the results
+> function storeResult(event) {
+>   result += event.data;
+>   pending_workers -= 1;
+>   if (pending_workers <= 0)
+>     postMessage(result); // finished!
+> }
+> ```
+
+上面代码中，Worker 线程内部新建了10个 Worker 线程，并且依次向这10个 Worker 发送消息，告知了计算的起点和终点。计算任务脚本的代码如下。
+
+> ```javascript
+> // core.js
+> var start;
+> onmessage = getStart;
+> function getStart(event) {
+>   start = event.data;
+>   onmessage = getEnd;
+> }
+> 
+> var end;
+> function getEnd(event) {
+>   end = event.data;
+>   onmessage = null;
+>   work();
+> }
+> 
+> function work() {
+>   var result = 0;
+>   for (var i = start; i < end; i += 1) {
+>     // perform some complex calculation here
+>     result += 1;
+>   }
+>   postMessage(result);
+>   close();
+> }
+> ```
+
+## 七、API
+
+### 7.1 主线程
+
+浏览器原生提供`Worker()`构造函数，用来供主线程生成 Worker 线程。
+
+> ```javascript
+> var myWorker = new Worker(jsUrl, options);
+> ```
+
+`Worker()`构造函数，可以接受两个参数。第一个参数是脚本的网址（必须遵守同源政策），该参数是必需的，且只能加载 JS 脚本，否则会报错。第二个参数是配置对象，该对象可选。它的一个作用就是指定 Worker 的名称，用来区分多个 Worker 线程。
+
+> ```javascript
+> // 主线程
+> var myWorker = new Worker('worker.js', { name : 'myWorker' });
+> 
+> // Worker 线程
+> self.name // myWorker
+> ```
+
+`Worker()`构造函数返回一个 Worker 线程对象，用来供主线程操作 Worker。Worker 线程对象的属性和方法如下。
+
+> - Worker.onerror：指定 error 事件的监听函数。
+> - Worker.onmessage：指定 message 事件的监听函数，发送过来的数据在`Event.data`属性中。
+> - Worker.onmessageerror：指定 messageerror 事件的监听函数。发送的数据无法序列化成字符串时，会触发这个事件。
+> - Worker.postMessage()：向 Worker 线程发送消息。
+> - Worker.terminate()：立即终止 Worker 线程。
+
+### 7.2 Worker 线程
+
+Web Worker 有自己的全局对象，不是主线程的`window`，而是一个专门为 Worker 定制的全局对象。因此定义在`window`上面的对象和方法不是全部都可以使用。
+
+Worker 线程有一些自己的全局属性和方法。
+
+> - self.name： Worker 的名字。该属性只读，由构造函数指定。
+> - self.onmessage：指定`message`事件的监听函数。
+> - self.onmessageerror：指定 messageerror 事件的监听函数。发送的数据无法序列化成字符串时，会触发这个事件。
+> - self.close()：关闭 Worker 线程。
+> - self.postMessage()：向产生这个 Worker 线程发送消息。
+> - self.importScripts()：加载 JS 脚本。
