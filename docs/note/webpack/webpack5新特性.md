@@ -127,7 +127,7 @@ module.exports = {
 
 ## 包代码体积的优化 - Tree Shaking
 
-同时tree shaking也得到了加强，可以覆盖更到负责的场景。
+同时tree shaking也得到了加强，可以覆盖更多全面的场景。
 
 1. Nested tree-shaking
 2. Inner-module tree-shaking
