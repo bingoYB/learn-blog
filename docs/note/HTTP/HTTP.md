@@ -164,6 +164,12 @@ URI 的第二种形式就是统一资源名(URN). URN是作为特定内容的唯
 
 
 
+这个过程可通过wireshark抓包分析出来
+
+![image-20210520211145292](../javascript/http-wireshark.png)
+
+从图中就可看出主要的一些步骤信息
+
 
 
 ## HTTP2
