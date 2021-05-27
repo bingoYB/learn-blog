@@ -1,0 +1,93 @@
+# 实现 mergePromise 函数
+
+```js
+实现 mergePromise 函数，把传进去的数组顺序先后执行，并且把返回的数据先后放到数组 data 中
+
+const timeout = ms =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve()
+    }, ms)
+  })
+
+const ajax1 = () =>
+  timeout(2000).then(() => {
+    console.log('1')
+    return 1
+  })
+
+const ajax2 = () =>
+  timeout(1000).then(() => {
+    console.log('2')
+    return 2
+  })
+
+const ajax3 = () =>
+  timeout(2000).then(() => {
+    console.log('3')
+    return 3
+  })
+
+const mergePromise = ajaxArray => {
+  // 在这里实现你的代码
+}
+
+mergePromise([ajax1, ajax2, ajax3]).then(data => {
+  console.log('done')
+  console.log(data) // data 为 [1, 2, 3]
+})
+
+// 分别输出
+// 1
+// 2
+// 3
+// done
+// [1, 2, 3]
+```
+
+
+
+```js
+const mergePromise = ajaxArray => {
+   return ajaxArray.reduce((pre,item)=>{
+     return pre.then(arr=>{
+       return item().then(data=>{
+         arr.push(data)
+         return arr
+       })
+     })
+   },Promise.resolve([]))
+}
+```
+
+
+
+```js
+const mergePromise = ajaxArray => {
+  return new Promise(async (resolve, reject) =>{
+    const datas = []
+    for (let i = 0; i < ajaxArray.length; i++) {
+      datas.push(await ajaxArray[i]())
+    }
+    resolve(datas)
+  })
+}
+```
+
+
+
+```js
+const mergePromise = ajaxArray => {
+  const datas = []
+  return next(0, datas)
+
+  function next(index, datas) {
+    return ajaxArray[index]().then(data => {
+      datas.push(data)
+      if (index + 1 < ajaxArray.length) return next(index + 1, datas)
+      return datas
+    })
+  }
+}
+```
+
