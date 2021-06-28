@@ -11,11 +11,3 @@
 [点击进入](https://bingoyb.github.io/learn-blog/dist/)
 
 [码云快速地址](https://bingoyyy.gitee.io/learn-blog/dist/)
-
-准备写的
-
-- [ ] Node架构原理
-- [ ] PM2基本使用
-- [ ] 前端工程化。。。
-- [ ] Vue原理
-- [ ] React原理
