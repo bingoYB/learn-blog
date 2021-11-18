@@ -2,7 +2,7 @@
 
 ### Node.js 对异步 IO 的实现我们来看一下 Node.js 异步 IO 实现图：
 
-![异步IO](node_async.png)
+![异步IO](./node_async.png)
 
 - 应用程序先将 JS 代码经 V8 转换为机器码。
 - 通过 Node.js Bindings 层，向操作系统 Libuv 的事件队列中添加一个任务。
