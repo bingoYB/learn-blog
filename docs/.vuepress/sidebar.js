@@ -5,11 +5,6 @@ const notePath = './docs/note'
 
 const note = [
   {
-    title: '内推',
-    collapsable: true,
-    children: getChildren(`${notePath}/job`)
-  },
-  {
     title: 'CSS',
     collapsable: true,
     children: getChildren(`${notePath}/css`)
