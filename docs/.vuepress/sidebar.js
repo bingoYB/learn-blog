@@ -1,78 +1,83 @@
 // note
-const {getChildren} = require("vuepress-sidebar-atuo")
+const { getChildren } = require("vuepress-sidebar-atuo");
 
-const notePath = './docs/note'
+const notePath = "./docs/note";
 
 const note = [
   {
-    title: 'CSS',
+    title: "CSS",
     collapsable: true,
-    children: getChildren(`${notePath}/css`)
+    children: getChildren(`${notePath}/css`),
   },
   {
-    title: '编程思想',
+    title: "编程思想",
     collapsable: true,
-    children: getChildren(`${notePath}/编程思想`)
+    children: getChildren(`${notePath}/编程思想`),
   },
   {
-    title: 'JavaScript',
+    title: "JavaScript",
     collapsable: true,
-    children: getChildren(`${notePath}/javascript`)
+    children: getChildren(`${notePath}/javascript`),
   },
   {
-    title: 'HTTP',
+    title: "HTTP",
     collapsable: true,
-    children: getChildren(`${notePath}/HTTP`)
+    children: getChildren(`${notePath}/HTTP`),
   },
   {
-    title: 'Node',
+    title: "Node",
     collapsable: true,
-    children: getChildren(`${notePath}/Node`)
+    children: getChildren(`${notePath}/Node`),
   },
   {
-    title: 'React',
+    title: "React",
     collapsable: true,
-    children: getChildren(`${notePath}/React`)
+    children: getChildren(`${notePath}/React`),
   },
   {
-    title: 'webpack',
+    title: "webpack",
     collapsable: true,
-    children: getChildren(`${notePath}/webpack`)
+    children: getChildren(`${notePath}/webpack`),
   },
   {
-    title: '前端图形学',
+    title: "前端图形学",
     collapsable: true,
-    children: getChildren(`${notePath}/graphics`)
+    children: getChildren(`${notePath}/graphics`),
   },
   {
-    title: '前端工程化',
+    title: "前端工程化",
     collapsable: true,
-    children: getChildren(`${notePath}/engineering`)
-  }
-]
+    children: getChildren(`${notePath}/engineering`),
+  },
+  {
+    title: "NextJs",
+    collapsable: true,
+    children: getChildren(`${notePath}/NextJs`),
+  },
+];
 
-const algorithmPath = './docs/algorithm'
+const algorithmPath = "./docs/algorithm";
 
 const algorithm = [
   {
-    title: '每日一题',
+    title: "每日一题",
     collapsable: true,
-    children: getChildren(`${algorithmPath}/every/`)
+    children: getChildren(`${algorithmPath}/every/`),
   },
   {
-    title: '基础算法',
+    title: "基础算法",
     collapsable: true,
-    children: getChildren(`${algorithmPath}/basic`)
+    children: getChildren(`${algorithmPath}/basic`),
   },
   {
-    title: '数据结构',
+    title: "数据结构",
     collapsable: true,
-    children: getChildren(`${algorithmPath}/struct`)
+    children: getChildren(`${algorithmPath}/struct`),
   },
-]
+];
 
 module.exports = {
-    '/note/': note,
-    '/algorithm/': algorithm,
-    // '/open_source/': open_source
-}
+  "/note/": note,
+  "/algorithm/": algorithm,
+  // '/open_source/': open_source
+};
