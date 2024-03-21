@@ -209,17 +209,17 @@ Worker 内部也可以监听`error`事件。
 
 通常情况下，Worker 载入的是一个单独的 JavaScript 脚本文件，但是也可以载入与主线程在同一个网页的代码。
 
-> ```markup
-> <!DOCTYPE html>
->   <body>
->     <script id="worker" type="app/worker">
->       addEventListener('message', function () {
->         postMessage('some message');
->       }, false);
->     </script>
->   </body>
-> </html>
-> ```
+```markup
+ <!DOCTYPE html>
+   <body>
+     <script id="worker" type="app/worker">
+       addEventListener('message', function () {
+         postMessage('some message');
+       }, false);
+     </script>
+   </body>
+ </html>
+ ```
 
 上面是一段嵌入网页的脚本，注意必须指定`<script>`标签的`type`属性是一个浏览器不认识的值，上例是`app/worker`。
 
