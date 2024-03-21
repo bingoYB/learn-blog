@@ -2,16 +2,18 @@
   "devDependencies": {
     "@vuepress/plugin-back-to-top": "^1.5.4",
     "@vuepress/plugin-medium-zoom": "^1.5.4",
+    "vitepress": "1.0.0-rc.45",
     "vuepress": "^1.5.2",
     "vuepress-plugin-side-anchor": "^1.0.6",
     "vuepress-sidebar-atuo": "^1.0.4"
   },
   "scripts": {
-    "dev": "vuepress dev docs",
-    "build": "vuepress build docs"
+    "dev": "vitepress dev docs --port=8732",
+    "build": "vitepress build docs"
   },
   "dependencies": {
     "@types/node": "^18.14.0",
-    "markdown-it-katex": "^2.0.3"
+    "markdown-it-katex": "^2.0.3",
+    "vue": "^3.4.21"
   }
 }
